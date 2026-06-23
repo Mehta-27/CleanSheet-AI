@@ -52,8 +52,8 @@ def main() -> None:
         with logo_col:
             st.markdown(
                 "<div style='padding: 0.3rem 0;'>"
-                "<span class='gradient-text' style='font-size:1.3rem; font-weight:800; "
-                "letter-spacing:-0.03em;'>🧹 CleanSheet AI</span>"
+                "<span style='font-size:1.15rem; font-weight:700; "
+                "color:var(--text-heading); letter-spacing:-0.02em;'>🧹 CleanSheet AI</span>"
                 "</div>",
                 unsafe_allow_html=True,
             )
@@ -71,12 +71,12 @@ def main() -> None:
                 if i == current_idx:
                     dot = (
                         f"<div style='width:28px; height:6px; border-radius:999px; "
-                        f"background:var(--gradient-primary); flex-shrink:0;'></div>"
+                        f"background:var(--accent-blue); flex-shrink:0;'></div>"
                     )
                 elif i < current_idx:
                     dot = (
                         f"<div style='width:14px; height:6px; border-radius:999px; "
-                        f"background:var(--accent-emerald); opacity:0.7; flex-shrink:0;'></div>"
+                        f"background:var(--accent-green); opacity:0.7; flex-shrink:0;'></div>"
                     )
                 else:
                     dot = (
@@ -128,7 +128,7 @@ def main() -> None:
             "<li>Outlier detection & filtering</li>"
             "</ul>"
             "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-cta-btn' "
-            "target='_blank'>Get Pro — $9.99 →</a>"
+            "target='_blank'>Get Pro Now! →</a>"
             "</div>",
             unsafe_allow_html=True,
         )

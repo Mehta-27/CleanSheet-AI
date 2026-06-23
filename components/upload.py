@@ -1,26 +1,37 @@
 import streamlit as st
-from src.utils import logger, MAX_FILE_SIZE_MB, SUPPORTED_EXTENSIONS
+from src.utils import logger, MAX_FILE_SIZE_MB, MAX_FILE_SIZE_PRO_MB, SUPPORTED_EXTENSIONS
 from src.utils import format_bytes
 from src.loader import load_csv, validate_csv
 
 
+def _is_pro() -> bool:
+    return st.session_state.get("_pro", False)
+
+
+def _file_limit() -> int:
+    return MAX_FILE_SIZE_PRO_MB if _is_pro() else MAX_FILE_SIZE_MB
+
+
 def render_upload() -> None:
     # ── Hero Section ──
+    subtitle = (
+        "CleanSheet AI Pro — Premium Version. Unlimited cleaning and exports."
+        if _is_pro()
+        else "Upload a messy CSV. Get a clean dataset in under 60 seconds. <span style='color:var(--accent-emerald); font-weight:600;'>Free, no sign-up required.</span>"
+    )
     st.markdown(
-        "<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
-        "<div class='hero-title'>Your Data, Perfectly Clean</div>"
-        "<p class='hero-subtitle' style='margin:0 auto;'>"
-        "Upload a messy CSV. Get a clean dataset in under 60 seconds. "
-        "<span style='color:var(--accent-emerald); font-weight:600;'>"
-        "Free, no sign-up required.</span></p>"
-        "</div>",
+        f"<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
+        f"<div class='hero-title'>Your Data, Perfectly Clean</div>"
+        f"<p class='hero-subtitle' style='margin:0 auto;'>{subtitle}</p>"
+        f"</div>",
         unsafe_allow_html=True,
     )
 
+    limit = _file_limit()
     uploaded = st.file_uploader(
         "Choose a CSV or TSV file",
-        type=["csv", "tsv", "txt"],
-        help=f"Max file size: {MAX_FILE_SIZE_MB} MB (upgrade to Pro for 500 MB)",
+        type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
+        help=f"Max file size: {limit} MB" + ("" if _is_pro() else " (upgrade to Pro for 500 MB)"),
     )
 
     if uploaded is None:
@@ -92,31 +103,32 @@ def render_upload() -> None:
         pills_html += "</div>"
         st.markdown(pills_html, unsafe_allow_html=True)
 
-        # ── Pro teaser ──
-        pro_features = [
-            "🔒 Excel (.xlsx) export",
-            "🔒 AI cleaning suggestions",
-            "🔒 PDF quality reports",
-            "🔒 500 MB file limit",
-            "🔒 Batch processing",
-        ]
-        pro_pills = "<div style='text-align:center; margin-bottom:1rem;'>"
-        for feat in pro_features:
-            pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span> "
-        pro_pills += (
-            "<a href='https://7388507084353.gumroad.com/l/tqqra' target='_blank' "
-            "class='feature-pill' style='border-color:var(--accent-amber); "
-            "color:var(--accent-amber); font-weight:600;'>Unlock Pro →</a>"
-        )
-        pro_pills += "</div>"
-        st.markdown(pro_pills, unsafe_allow_html=True)
+        # ── Pro teaser (free version only) ──
+        if not _is_pro():
+            pro_features = [
+                "🔒 Excel (.xlsx) export",
+                "🔒 AI cleaning suggestions",
+                "🔒 PDF quality reports",
+                "🔒 500 MB file limit",
+                "🔒 Batch processing",
+            ]
+            pro_pills = "<div style='text-align:center; margin-bottom:1rem;'>"
+            for feat in pro_features:
+                pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span> "
+            pro_pills += (
+                "<a href='https://7388507084353.gumroad.com/l/tqqra' target='_blank' "
+                "class='feature-pill' style='border-color:var(--accent-amber); "
+                "color:var(--accent-amber); font-weight:600;'>Unlock Pro →</a>"
+            )
+            pro_pills += "</div>"
+            st.markdown(pro_pills, unsafe_allow_html=True)
         return
 
-    if uploaded.size and uploaded.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+    limit = _file_limit()
+    if uploaded.size and uploaded.size > limit * 1024 * 1024:
         st.error(
             f"File too large ({format_bytes(uploaded.size)}). "
-            f"Max free limit is {MAX_FILE_SIZE_MB} MB. "
-            "Upgrade to Pro for 500 MB."
+            f"Max limit is {limit} MB."
         )
         return
 

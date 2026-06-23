@@ -1,11 +1,15 @@
-import streamlit as st
+import os
+import sys
 
-st.set_page_config(
-    page_title="CleanSheet AI Pro — Data Cleaning Tool",
-    page_icon="🧹",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+# Force Streamlit production mode and configuration at the absolute top
+os.environ["STREAMLIT_GLOBAL_DEVELOPMENT_MODE"] = "false"
+os.environ["STREAMLIT_DEVELOPMENT_MODE"] = "false"
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "false"
+os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+
+# Force PyInstaller to bundle scriptrunner magic functions
+import streamlit.runtime.scriptrunner.magic_funcs
+import streamlit as st
 
 from src.styles import inject_css
 from components.upload import render_upload
@@ -54,12 +58,20 @@ def _pro_export() -> None:
 
 
 def main() -> None:
+    st.set_page_config(
+        page_title="CleanSheet AI Pro — Data Cleaning Tool",
+        page_icon="🧹",
+        layout="wide",
+        initial_sidebar_state="expanded",
+    )
     inject_css()
 
     if "page" not in st.session_state:
         st.session_state.page = "upload"
     if "dark_mode" not in st.session_state:
         st.session_state.dark_mode = True
+    if "_pro" not in st.session_state:
+        st.session_state._pro = True
 
     has_data = "df" in st.session_state
     current = st.session_state.page
@@ -70,8 +82,8 @@ def main() -> None:
         with logo_col:
             st.markdown(
                 "<div style='padding: 0.3rem 0;'>"
-                "<span class='gradient-text' style='font-size:1.3rem; font-weight:800; "
-                "letter-spacing:-0.03em;'>🧹 CleanSheet Pro</span>"
+                "<span style='font-size:1.15rem; font-weight:700; "
+                "color:var(--text-heading); letter-spacing:-0.02em;'>🧹 CleanSheet Pro</span>"
                 "</div>",
                 unsafe_allow_html=True,
             )
@@ -86,9 +98,9 @@ def main() -> None:
             steps_html = "<div style='display:flex; align-items:center; gap:4px; margin:0.6rem 0 0.3rem 0;'>"
             for i, key in enumerate(PAGE_ORDER):
                 if i == current_idx:
-                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--gradient-primary);flex-shrink:0;'></div>"
+                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--accent-blue);flex-shrink:0;'></div>"
                 elif i < current_idx:
-                    dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--accent-emerald);opacity:0.7;flex-shrink:0;'></div>"
+                    dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--accent-green);opacity:0.7;flex-shrink:0;'></div>"
                 else:
                     dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--border-medium);flex-shrink:0;'></div>"
                 steps_html += dot
@@ -145,15 +157,24 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    import sys
-    from streamlit.web import cli as stcli
+    import streamlit as st
+    if st.runtime.exists():
+        main()
+    else:
+        import sys
+        from streamlit.web import cli as stcli
 
-    if len(sys.argv) > 1 and sys.argv[1] == "streamlit":
+        if getattr(sys, "frozen", False):
+            meipass = sys._MEIPASS
+            script_path = os.path.join(meipass, "app_pro.py")
+        else:
+            script_path = __file__
+
         sys.argv = [
-            "streamlit", "run", __file__,
-            "--global.developmentMode=false",
-            "--server.headless=true",
+            "streamlit", "run", script_path,
+            "--server.port", "8501",
+            "--server.headless", "false",
+            "--global.developmentMode", "false",
+            "--browser.gatherUsageStats", "false",
         ]
         sys.exit(stcli.main())
-    else:
-        main()

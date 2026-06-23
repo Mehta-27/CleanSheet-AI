@@ -20,29 +20,29 @@ pip install pyinstaller
 
 ## Step 2: Build the EXE
 
+### Important: The entry point is `app_pro.py`, NOT `app.py`.
+`app_pro.py` includes all Pro features (Excel, AI suggestions, PDF reports, etc.).
+
 ```bash
 pyinstaller ^
     --onefile ^
-    --windowed ^
     --name "CleanSheet_AI_Pro" ^
-    --icon icon.ico ^
     --add-data "sample_data;sample_data" ^
-    --hidden-import pandas ^
-    --hidden-import numpy ^
-    --hidden-import plotly ^
-    --hidden-import streamlit ^
-    --hidden-import openpyxl ^
-    --hidden-import xlsxwriter ^
-    --hidden-import fpdf ^
-    app.py
+    app_pro.py
 ```
 
 ### Explanation:
 - `--onefile`: Single EXE for easy distribution
-- `--windowed`: No console window (clean UX)
 - `--name`: "CleanSheet_AI_Pro" — the product name buyers see
 - `--add-data`: Includes sample data for first-time users
-- `--hidden-import`: Ensures all dependencies are bundled
+- Entry point is `app_pro.py` (includes all Free + Pro features)
+
+### How the EXE works when a buyer double-clicks it:
+1. A terminal window opens briefly while Streamlit starts up
+2. Your default browser automatically opens to `http://localhost:8501`
+3. The full CleanSheet Pro UI appears — all features unlocked
+4. Close the terminal window to stop the app
+5. No installation, no admin rights, no registry changes. Runs portably (even from USB).
 
 ## Step 3: Test the EXE
 
@@ -133,7 +133,7 @@ When you release updates:
 ```bash
 # Full build command (copy-paste ready)
 pip install pyinstaller
-pyinstaller --onefile --windowed --name "CleanSheet_AI_Pro" --add-data "sample_data;sample_data" app.py
+pyinstaller --onefile --name "CleanSheet_AI_Pro" --add-data "sample_data;sample_data" --copy-metadata streamlit app_pro.py
 
-# Output: dist/CleanSheet_AI_Pro.exe (~70 MB)
+# Output: dist/CleanSheet_AI_Pro.exe (~130 MB)
 ```
