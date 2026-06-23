@@ -7,7 +7,7 @@ _handler.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
 if not logger.handlers:
     logger.addHandler(_handler)
 
-MAX_FILE_SIZE_MB = 50
+MAX_FILE_SIZE_MB = 5
 MAX_FILE_SIZE_PRO_MB = 500
 TARGET_PROFILE_SECONDS = 5
 
