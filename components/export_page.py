@@ -8,21 +8,26 @@ def render_export() -> None:
     df = st.session_state.df
     log = st.session_state.get("cleaning_log", [])
     profile = profile_dataset(df)
-
-    st.markdown("## 📥 Export Cleaned Data")
-
     before = profile_dataset(st.session_state.get("df_original", df))
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Rows", f"{profile.row_count:,}")
-    col2.metric("Missing Cells", f"{profile.total_missing_cells:,}",
-                delta=f"{-before.total_missing_cells + profile.total_missing_cells}")
-    col3.metric("Duplicates", profile.duplicate_count,
-                delta=f"{-before.duplicate_count + profile.duplicate_count}")
+    st.markdown("## Export Cleaned Data")
 
-    with st.expander("👁 Preview Cleaned Data", expanded=False):
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Rows", f"{profile.row_count:,}")
+    with col2:
+        miss_delta = -before.total_missing_cells + profile.total_missing_cells
+        st.metric("Missing Cells", f"{profile.total_missing_cells:,}",
+                  delta=f"{miss_delta:+d}" if miss_delta != 0 else None)
+    with col3:
+        dup_delta = -before.duplicate_count + profile.duplicate_count
+        st.metric("Duplicates", profile.duplicate_count,
+                  delta=f"{dup_delta:+d}" if dup_delta != 0 else None)
+
+    with st.expander("👁 Preview Cleaned Data"):
         st.dataframe(df.head(20), use_container_width=True, height=300)
-        st.text(to_markdown_preview(df))
+        st.markdown("**Markdown Preview:**")
+        st.code(to_markdown_preview(df))
 
     csv_bytes = to_csv_bytes(df)
     st.download_button(
@@ -34,31 +39,39 @@ def render_export() -> None:
         type="primary",
     )
 
-    try:
-        xlsx_bytes = to_excel_bytes(df)
-        st.download_button(
-            label="📥 Download as Excel (.xlsx) — Pro Feature",
-            data=xlsx_bytes,
-            file_name=f"{st.session_state.get('filename', 'data').rsplit('.', 1)[0]}_cleaned.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
-            disabled=True,
-            help="Upgrade to CleanSheet Pro for Excel export",
+    col_disabled, col_pro = st.columns([3, 1])
+    with col_disabled:
+        try:
+            xlsx_bytes = to_excel_bytes(df)
+            st.download_button(
+                label="📥 Download as Excel (.xlsx) — Pro Feature",
+                data=xlsx_bytes,
+                file_name=f"{st.session_state.get('filename', 'data').rsplit('.', 1)[0]}_cleaned.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+                disabled=True,
+                help="Upgrade to CleanSheet Pro for Excel export",
+            )
+        except Exception:
+            st.info("⭐ Excel export requires CleanSheet Pro")
+    with col_pro:
+        st.markdown(
+            "<a href='https://gumroad.com' "
+            "style='display:block;background:linear-gradient(135deg,#D97706,#F59E0B);"
+            "color:white;text-align:center;padding:0.5rem 0.75rem;border-radius:8px;"
+            "font-weight:600;font-size:0.85rem;text-decoration:none;white-space:nowrap'>"
+            "Get Pro — $9.99</a>",
+            unsafe_allow_html=True,
         )
-    except Exception:
-        st.info("⭐ Excel export requires CleanSheet Pro")
 
     if log:
         with st.expander("📋 Cleaning Summary", expanded=True):
             for i, entry in enumerate(log, 1):
-                st.markdown(f"**{i}.** {entry}")
-
-    st.markdown("---")
-    st.markdown("#### ⭐ Like CleanSheet AI?")
-    st.markdown(
-        "[☕ Buy me a coffee](https://buymeacoffee.com) · "
-        "[🚀 Get CleanSheet Pro](https://gumroad.com)"
-    )
+                st.markdown(
+                    f"<div class='cleaning-entry'>"
+                    f"<span class='step'>{i}</span>{entry}</div>",
+                    unsafe_allow_html=True,
+                )
 
     st.markdown("---")
     c1, c2 = st.columns(2)

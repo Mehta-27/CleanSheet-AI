@@ -13,7 +13,7 @@ def render_clean() -> None:
     original = st.session_state.get("df_original", df)
     log = st.session_state.setdefault("cleaning_log", [])
 
-    st.markdown("## 🧹 Clean Your Data")
+    st.markdown("## Clean Your Data")
     st.markdown(
         f"Working with **{len(df):,} rows × {len(df.columns):,} columns**"
     )
