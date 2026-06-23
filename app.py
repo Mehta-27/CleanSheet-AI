@@ -148,7 +148,7 @@ def main() -> None:
             "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0 0 0.15rem 0; "
             "font-weight:500;'>🇮🇳 UPI (India)</p>"
             "<code style='font-size:0.78rem; color:var(--accent-cyan);'>"
-            "cleansheet@upi</code>"
+            "mehtarishit108@oksbi</code>"
             "</div>"
             "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0.5rem 0 0 0; "
             "font-style:italic;'>PayPal — coming soon</p>"
