@@ -19,3 +19,4 @@ Thumbs.db
 sample_data/output/
 *.egg-info/
 .pytest_cache/
+stripe_backup_code.txt
