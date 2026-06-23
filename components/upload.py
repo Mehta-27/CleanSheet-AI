@@ -5,8 +5,17 @@ from src.loader import load_csv, validate_csv
 
 
 def render_upload() -> None:
-    st.markdown("## CleanSheet AI")
-    st.markdown("Upload a messy CSV. Get a clean dataset. **Free, no sign-up.**")
+    # ── Hero Section ──
+    st.markdown(
+        "<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
+        "<div class='hero-title'>Your Data, Perfectly Clean</div>"
+        "<p class='hero-subtitle' style='margin:0 auto;'>"
+        "Upload a messy CSV. Get a clean dataset in under 60 seconds. "
+        "<span style='color:var(--accent-emerald); font-weight:600;'>"
+        "Free, no sign-up required.</span></p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
     uploaded = st.file_uploader(
         "Choose a CSV or TSV file",
@@ -15,25 +24,92 @@ def render_upload() -> None:
     )
 
     if uploaded is None:
+        # ── How it works — feature cards ──
+        st.markdown(
+            "<div style='margin-top:0.5rem;'>"
+            "<p style='text-align:center; color:var(--text-tertiary); font-size:0.82rem; "
+            "font-weight:500; text-transform:uppercase; letter-spacing:0.06em; "
+            "margin-bottom:1rem;'>How it works</p></div>",
+            unsafe_allow_html=True,
+        )
+
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.markdown("**📤 1. Upload**")
-            st.markdown("Drop your messy CSV or TSV. Up to 5 MB free.")
-        with col2:
-            st.markdown("**🔍 2. Detect Issues**")
-            st.markdown("Auto-profiling finds missing values, duplicates, and outliers.")
-        with col3:
-            st.markdown("**✨ 3. Clean & Export**")
-            st.markdown("Fix issues and download a clean dataset.")
-
-        with st.expander("⭐ Pro Features"):
             st.markdown(
-                "- **Excel (.xlsx)** export\n"
-                "- **AI-powered** cleaning suggestions\n"
-                "- **PDF** quality reports\n"
-                "- **500 MB** file limit\n"
-                "\n[Get Pro on Gumroad](https://gumroad.com)"
+                "<div class='feature-card'>"
+                "<span class='icon'>📤</span>"
+                "<h4>1. Upload</h4>"
+                "<p>Drop your messy CSV or TSV file. Up to 5 MB free — "
+                "auto-detects delimiters and encoding.</p>"
+                "</div>",
+                unsafe_allow_html=True,
             )
+        with col2:
+            st.markdown(
+                "<div class='feature-card'>"
+                "<span class='icon'>🔍</span>"
+                "<h4>2. Detect Issues</h4>"
+                "<p>Auto-profiling finds missing values, duplicates, "
+                "outliers, and type mismatches instantly.</p>"
+                "</div>",
+                unsafe_allow_html=True,
+            )
+        with col3:
+            st.markdown(
+                "<div class='feature-card'>"
+                "<span class='icon'>✨</span>"
+                "<h4>3. Clean & Export</h4>"
+                "<p>Fix issues with one click — fill missing values, "
+                "remove duplicates, and download clean data.</p>"
+                "</div>",
+                unsafe_allow_html=True,
+            )
+
+        # ── What's included ──
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown(
+            "<p style='text-align:center; color:var(--text-tertiary); font-size:0.82rem; "
+            "font-weight:500; text-transform:uppercase; letter-spacing:0.06em; "
+            "margin-bottom:0.8rem;'>What's included</p>",
+            unsafe_allow_html=True,
+        )
+
+        free_features = [
+            "CSV & TSV upload",
+            "Auto profiling",
+            "Missing value handling",
+            "Duplicate removal",
+            "Text standardization",
+            "Type conversion",
+            "Interactive preview",
+            "Plotly charts",
+            "CSV download",
+            "Cleaning history",
+        ]
+        pills_html = "<div style='text-align:center; margin-bottom:1rem;'>"
+        for feat in free_features:
+            pills_html += f"<span class='feature-pill'>✓ {feat}</span> "
+        pills_html += "</div>"
+        st.markdown(pills_html, unsafe_allow_html=True)
+
+        # ── Pro teaser ──
+        pro_features = [
+            "🔒 Excel (.xlsx) export",
+            "🔒 AI cleaning suggestions",
+            "🔒 PDF quality reports",
+            "🔒 500 MB file limit",
+            "🔒 Batch processing",
+        ]
+        pro_pills = "<div style='text-align:center; margin-bottom:1rem;'>"
+        for feat in pro_features:
+            pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span> "
+        pro_pills += (
+            "<a href='https://gumroad.com/l/cleansheet-ai-pro' target='_blank' "
+            "class='feature-pill' style='border-color:var(--accent-amber); "
+            "color:var(--accent-amber); font-weight:600;'>Unlock Pro →</a>"
+        )
+        pro_pills += "</div>"
+        st.markdown(pro_pills, unsafe_allow_html=True)
         return
 
     if uploaded.size and uploaded.size > MAX_FILE_SIZE_MB * 1024 * 1024:

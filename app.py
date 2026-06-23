@@ -24,28 +24,76 @@ PAGES = {
 
 PAGE_ORDER = ["upload", "overview", "issues", "clean", "export"]
 
+STEP_ICONS = {
+    "upload": "📤",
+    "overview": "📊",
+    "issues": "🚩",
+    "clean": "🧹",
+    "export": "📥",
+}
+
 
 def main() -> None:
     inject_css()
 
+    # ── Init state ──
     if "page" not in st.session_state:
         st.session_state.page = "upload"
+    if "dark_mode" not in st.session_state:
+        st.session_state.dark_mode = True
 
     has_data = "df" in st.session_state
     current = st.session_state.page
     current_idx = PAGE_ORDER.index(current) if current in PAGE_ORDER else 0
 
     with st.sidebar:
-        st.markdown("### 🧹 CleanSheet AI")
-
-        # Progress indicator
-        if has_data:
+        # ── Logo + Theme Toggle row ──
+        logo_col, toggle_col = st.columns([3, 1])
+        with logo_col:
             st.markdown(
-                f"<small style='color:#64748B'>Step {current_idx + 1} of 5</small>",
+                "<div style='padding: 0.3rem 0;'>"
+                "<span class='gradient-text' style='font-size:1.3rem; font-weight:800; "
+                "letter-spacing:-0.03em;'>🧹 CleanSheet AI</span>"
+                "</div>",
+                unsafe_allow_html=True,
+            )
+        with toggle_col:
+            dark = st.session_state.dark_mode
+            icon = "☀️" if dark else "🌙"
+            if st.button(icon, key="theme_toggle", help="Toggle dark/light mode"):
+                st.session_state.dark_mode = not dark
+                st.rerun()
+
+        # ── Progress stepper ──
+        if has_data:
+            steps_html = "<div style='display:flex; align-items:center; gap:4px; margin:0.6rem 0 0.3rem 0;'>"
+            for i, key in enumerate(PAGE_ORDER):
+                if i == current_idx:
+                    dot = (
+                        f"<div style='width:28px; height:6px; border-radius:999px; "
+                        f"background:var(--gradient-primary); flex-shrink:0;'></div>"
+                    )
+                elif i < current_idx:
+                    dot = (
+                        f"<div style='width:14px; height:6px; border-radius:999px; "
+                        f"background:var(--accent-emerald); opacity:0.7; flex-shrink:0;'></div>"
+                    )
+                else:
+                    dot = (
+                        f"<div style='width:14px; height:6px; border-radius:999px; "
+                        f"background:var(--border-medium); flex-shrink:0;'></div>"
+                    )
+                steps_html += dot
+            steps_html += "</div>"
+            st.markdown(steps_html, unsafe_allow_html=True)
+            st.markdown(
+                f"<p style='color:var(--text-tertiary); font-size:0.72rem; "
+                f"font-weight:500; margin:0 0 0.5rem 0; text-transform:uppercase; "
+                f"letter-spacing:0.06em;'>Step {current_idx + 1} of 5</p>",
                 unsafe_allow_html=True,
             )
 
-        # Navigation as a numbered workflow
+        # ── Navigation ──
         for i, key in enumerate(PAGE_ORDER):
             label, _ = PAGES[key]
             enabled = key == "upload" or has_data
@@ -63,37 +111,65 @@ def main() -> None:
                 st.rerun()
 
         st.markdown("---")
-        st.markdown("##### ⭐ Upgrade to Pro")
+
+        # ── Pro CTA Card ──
         st.markdown(
-            "• Excel (.xlsx) export\n"
-            "• AI cleaning suggestions\n"
-            "• PDF quality reports\n"
-            "• 500 MB file limit\n"
-        )
-        st.markdown(
-            "<a href='https://gumroad.com' "
-            "style='display:block;background:#D97706;color:white;"
-            "text-align:center;padding:0.4rem;border-radius:6px;"
-            "font-weight:600;font-size:0.85rem;text-decoration:none'>"
-            "Get Pro — $9.99</a>",
+            "<div class='pro-cta-card'>"
+            "<div style='display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;'>"
+            "<span class='pro-badge'>✦ PRO</span>"
+            "<span style='font-size:0.9rem; font-weight:700; color:var(--text-heading);'>"
+            "Upgrade to Pro</span>"
+            "</div>"
+            "<ul>"
+            "<li>Excel (.xlsx) import & export</li>"
+            "<li>AI-powered cleaning suggestions</li>"
+            "<li>PDF quality reports</li>"
+            "<li>500 MB file limit</li>"
+            "<li>Outlier detection & filtering</li>"
+            "</ul>"
+            "<a href='https://gumroad.com/l/cleansheet-ai-pro' class='pro-cta-btn' "
+            "target='_blank'>Get Pro — $9.99 →</a>"
+            "</div>",
             unsafe_allow_html=True,
         )
 
         st.markdown("---")
-        st.markdown("##### ☕ Support")
+
+        # ── Support Card ──
         st.markdown(
-            "[Ko-fi](https://ko-fi.com/your-kofi) — works in India\n\n"
-            "Or scan any UPI app:\n"
-            "`yourname@upi`\n\n"
-            "v1.0.0",
+            "<div class='support-card'>"
+            "<div style='font-size:0.9rem; font-weight:700; color:var(--text-heading); "
+            "margin-bottom:0.4rem;'>💜 Support CleanSheet</div>"
+            "<p style='font-size:0.78rem; color:var(--text-tertiary); margin:0 0 0.6rem 0; "
+            "line-height:1.4;'>"
+            "Love CleanSheet? Even a small contribution helps keep it free.</p>"
+            "<div style='margin-top:0.6rem; padding:0.5rem; border-radius:var(--radius-sm); "
+            "background:var(--bg-glass); border:1px solid var(--border-subtle);'>"
+            "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0 0 0.15rem 0; "
+            "font-weight:500;'>🇮🇳 UPI (India)</p>"
+            "<code style='font-size:0.78rem; color:var(--accent-cyan);'>"
+            "cleansheet@upi</code>"
+            "</div>"
+            "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0.5rem 0 0 0; "
+            "font-style:italic;'>PayPal — coming soon</p>"
+            "</div>",
             unsafe_allow_html=True,
         )
 
+        # ── Version badge ──
+        st.markdown(
+            "<div style='text-align:center; margin-top:1rem;'>"
+            "<span class='version-badge'>v1.0.0</span>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+
+    # ── Render current page ──
     current_page = st.session_state.page
     _, page_fn = PAGES.get(current_page, ("", render_upload))
     page_fn()
 
-    # Auto-advance footer
+    # ── Auto-advance footer ──
     if has_data and current in PAGE_ORDER:
         next_idx = current_idx + 1
         if next_idx < len(PAGE_ORDER):

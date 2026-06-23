@@ -13,19 +13,33 @@ def render_clean() -> None:
     original = st.session_state.get("df_original", df)
     log = st.session_state.setdefault("cleaning_log", [])
 
-    st.markdown("## Clean Your Data")
     st.markdown(
-        f"Working with **{len(df):,} rows × {len(df.columns):,} columns**"
+        "<div class='section-header'>🧹 Clean Your Data</div>",
+        unsafe_allow_html=True,
     )
 
-    original_count = len(original)
-    current_count = len(df)
-    if current_count < original_count:
-        removed = original_count - current_count
+    # ── Working stats ──
+    col_s1, col_s2, col_s3 = st.columns(3)
+    with col_s1:
+        st.metric("Rows", f"{len(df):,}")
+    with col_s2:
+        st.metric("Columns", len(df.columns))
+    with col_s3:
+        removed = len(original) - len(df)
+        st.metric("Rows Removed", f"{removed:,}" if removed > 0 else "—")
+
+    if removed > 0:
         st.info(f"⚠️ {removed:,} rows have been removed by cleaning operations.")
 
+    # ── Remove Duplicates ──
     with st.container(border=True):
-        st.markdown("### 🔁 Remove Duplicates")
+        st.markdown(
+            "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
+            "<span style='font-size:1.3rem;'>🔁</span>"
+            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "Remove Duplicates</span></div>",
+            unsafe_allow_html=True,
+        )
         dup_cols = st.multiselect(
             "Columns to check (leave empty for all columns)",
             options=df.columns.tolist(),
@@ -46,8 +60,15 @@ def render_clean() -> None:
             else:
                 st.info("No duplicates found.")
 
+    # ── Handle Missing Values ──
     with st.container(border=True):
-        st.markdown("### ❓ Handle Missing Values")
+        st.markdown(
+            "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
+            "<span style='font-size:1.3rem;'>❓</span>"
+            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "Handle Missing Values</span></div>",
+            unsafe_allow_html=True,
+        )
         strategy = st.selectbox(
             "Strategy", options=list(CLEANING_METHODS.keys()),
             format_func=lambda k: CLEANING_METHODS[k],
@@ -95,19 +116,29 @@ def render_clean() -> None:
                 st.success(f"Missing values filled using '{strategy}'!")
             st.rerun()
 
+    # ── Standardize Text ──
     with st.container(border=True):
-        st.markdown("### ✏️ Standardize Text")
+        st.markdown(
+            "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
+            "<span style='font-size:1.3rem;'>✏️</span>"
+            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "Standardize Text</span></div>",
+            unsafe_allow_html=True,
+        )
         text_cols = st.multiselect(
             "Text columns to standardize",
             options=df.select_dtypes(include="object").columns.tolist(),
             key="text_cols",
         )
         if text_cols:
-            do_strip = st.checkbox("Strip whitespace", value=True, key="t_strip")
-            do_lower = st.checkbox("Convert to lowercase", key="t_lower")
-            do_upper = st.checkbox("Convert to UPPERCASE", key="t_upper")
-            do_title = st.checkbox("Convert to Title Case", key="t_title")
-            do_special = st.checkbox("Remove special characters", key="t_special")
+            t1, t2 = st.columns(2)
+            with t1:
+                do_strip = st.checkbox("Strip whitespace", value=True, key="t_strip")
+                do_lower = st.checkbox("Convert to lowercase", key="t_lower")
+                do_upper = st.checkbox("Convert to UPPERCASE", key="t_upper")
+            with t2:
+                do_title = st.checkbox("Convert to Title Case", key="t_title")
+                do_special = st.checkbox("Remove special characters", key="t_special")
             find_text = st.text_input("Find (optional):", key="t_find")
             replace_text = st.text_input("Replace with:", key="t_replace")
             fr_pair = (find_text, replace_text) if find_text else None
@@ -124,8 +155,15 @@ def render_clean() -> None:
                 st.success("Text standardized!")
                 st.rerun()
 
+    # ── Convert Data Types ──
     with st.container(border=True):
-        st.markdown("### 🔄 Convert Data Types")
+        st.markdown(
+            "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
+            "<span style='font-size:1.3rem;'>🔄</span>"
+            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "Convert Data Types</span></div>",
+            unsafe_allow_html=True,
+        )
         type_options = ["int64", "float64", "string", "datetime64[ns]", "category"]
         type_map = {}
         tcols = st.columns(2)
