@@ -127,7 +127,7 @@ def main() -> None:
             "<li>500 MB file limit</li>"
             "<li>Outlier detection & filtering</li>"
             "</ul>"
-            "<a href='https://gumroad.com/l/cleansheet-ai-pro' class='pro-cta-btn' "
+            "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-cta-btn' "
             "target='_blank'>Get Pro — $9.99 →</a>"
             "</div>",
             unsafe_allow_html=True,

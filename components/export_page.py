@@ -95,7 +95,7 @@ def render_export() -> None:
         "<span style='color:var(--accent-amber);'>✦</span>"
         "<span style='font-size:0.82rem; color:var(--text-secondary);'>500 MB file limit</span></div>"
         "</div>"
-        "<a href='https://gumroad.com/l/cleansheet-ai-pro' class='pro-cta-btn' "
+        "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-cta-btn' "
         "target='_blank'>Get Pro — $9.99 →</a>"
         "</div></div>",
         unsafe_allow_html=True,

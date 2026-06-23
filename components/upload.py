@@ -104,7 +104,7 @@ def render_upload() -> None:
         for feat in pro_features:
             pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span> "
         pro_pills += (
-            "<a href='https://gumroad.com/l/cleansheet-ai-pro' target='_blank' "
+            "<a href='https://7388507084353.gumroad.com/l/tqqra' target='_blank' "
             "class='feature-pill' style='border-color:var(--accent-amber); "
             "color:var(--accent-amber); font-weight:600;'>Unlock Pro →</a>"
         )

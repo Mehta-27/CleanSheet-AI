@@ -13,7 +13,7 @@ Upload your CSV → Auto-detect issues → Clean with one click → Download.
 **Use it now:** [cleansheet-ai.streamlit.app](https://cleansheet-ai.streamlit.app)
 
 ### Free features:
-- ✅ CSV & TSV upload (up to 50MB)
+- ✅ CSV & TSV upload (up to 5MB)
 - ✅ Automatic data profiling (missing values, duplicates, outliers, types)
 - ✅ Missing value handling (mean, median, mode, custom value, drop)
 - ✅ Duplicate removal (all columns or selected subset)
@@ -29,7 +29,7 @@ Upload your CSV → Auto-detect issues → Clean with one click → Download.
 
 **Everything in Free + advanced features for power users.**
 
-Grab it on Gumroad: [gumroad.com/l/cleansheet-ai-pro](https://gumroad.com/l/cleansheet-ai-pro)
+Grab it on Gumroad: [7388507084353.gumroad.com/l/tqqra](https://7388507084353.gumroad.com/l/tqqra)
 
 ### Pro features:
 | Feature | Free | Pro |

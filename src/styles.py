@@ -122,8 +122,19 @@ ANIMATIONS = """
 # ── Component Styles ──────────────────────────────────────────────────────
 COMPONENT_CSS = """
     /* ── Global Reset & Typography ── */
-    *, *::before, *::after {
+    *:not(.material-symbols-rounded):not(.material-symbols-outlined):not([data-testid="stSidebarCollapsedControl"] *),
+    *:not(.material-symbols-rounded):not(.material-symbols-outlined)::before,
+    *:not(.material-symbols-rounded):not(.material-symbols-outlined)::after {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    }
+
+    /* Preserve Streamlit's icon font for all icon elements */
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    [data-testid="stSidebarCollapsedControl"] span,
+    [data-testid="stSidebarNavCollapseButton"] span,
+    button[kind="header"] span {
+        font-family: 'Material Symbols Rounded', sans-serif !important;
     }
 
     .stApp {
@@ -154,6 +165,25 @@ COMPONENT_CSS = """
     section[data-testid="stSidebar"] {
         background: var(--bg-sidebar) !important;
         border-right: 1px solid var(--border-subtle) !important;
+        min-width: 280px !important;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
+    }
+    /* Gradient accent strip on sidebar left edge */
+    section[data-testid="stSidebar"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--gradient-primary);
+        z-index: 10;
+    }
+    /* Hide the collapse button — keep sidebar always visible */
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarNavCollapseButton"],
+    button[data-testid="stBaseButton-headerNoPadding"] {
+        display: none !important;
     }
     section[data-testid="stSidebar"] [data-testid="stMarkdown"] p,
     section[data-testid="stSidebar"] [data-testid="stMarkdown"] span,
