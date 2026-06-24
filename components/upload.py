@@ -29,18 +29,8 @@ def render_upload() -> None:
 
     limit = _file_limit()
 
-    st.markdown(
-        "<div class='upload-head'>"
-        "<span class='upload-head-icon'>📂</span>"
-        "<div class='upload-head-title'>Drop your file here</div>"
-        "<div class='upload-head-sub'>CSV, TSV &bull; up to "
-        + str(limit)
-        + " MB</div>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
     uploaded = st.file_uploader(
-        "Choose a CSV or TSV file",
+        "Upload your file",
         type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
         help=f"Max file size: {limit} MB" + ("" if _is_pro() else " (upgrade to Pro for 500 MB)"),
         label_visibility="collapsed",

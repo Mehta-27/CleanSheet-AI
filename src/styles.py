@@ -223,37 +223,20 @@ COMPONENT_CSS = """
     }
     [data-testid="stMetric"] [data-testid="stMetricDelta"] { font-weight: 600 !important; }
 
-    /* ── Upload heading (above the drop zone) ── */
-    .upload-head {
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-    .upload-head-icon {
-        font-size: 2.8rem;
-        display: block;
-        margin-bottom: 0.25rem;
-    }
-    .upload-head-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--text-heading);
-        margin-bottom: 0.15rem;
-    }
-    .upload-head-sub {
-        font-size: 0.82rem;
-        color: var(--text-tertiary);
-    }
-
-    /* ── File Uploader — clean centered drop zone ── */
+    /* ── File Uploader — big centered drop zone ── */
     [data-testid="stFileUploader"] {
-        max-width: 520px !important;
-        margin: 1rem auto !important;
+        max-width: 480px !important;
+        margin: 0.5rem auto !important;
         border: 2px dashed var(--border-medium) !important;
         border-radius: 16px !important;
-        padding: 2.5rem 2rem !important;
+        padding: 0 !important;
         text-align: center !important;
         background: var(--bg-card) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        min-height: 140px;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     [data-testid="stFileUploader"]:hover {
         border-color: var(--accent-purple) !important;
@@ -266,32 +249,34 @@ COMPONENT_CSS = """
     [data-testid="stFileUploader"] section {
         border: none !important;
         padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
     }
+    [data-testid="stFileUploader"] section > span,
+    [data-testid="stFileUploader"] section > small,
+    [data-testid="stFileUploader"] section > div > small,
     [data-testid="stFileUploader"] > label,
-    [data-testid="stFileUploader"] label {
+    [data-testid="stFileUploader"] label,
+    [data-testid="stFileUploader"] [data-testid="stMarkdownContainer"] {
         display: none !important;
     }
     [data-testid="stFileUploader"] button {
         background: var(--gradient-btn) !important;
         color: white !important;
         border: none !important;
-        border-radius: 8px !important;
-        padding: 0.6rem 2rem !important;
+        border-radius: 999px !important;
+        padding: 0.75rem 2.5rem !important;
         font-weight: 600 !important;
-        font-size: 0.9rem !important;
+        font-size: 1rem !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     }
     [data-testid="stFileUploader"] button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(167, 139, 250, 0.3) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(167, 139, 250, 0.35) !important;
     }
     [data-testid="stFileUploader"] button:active {
-        transform: translateY(0px) scale(0.96) !important;
-    }
-    [data-testid="stFileUploader"] small {
-        color: var(--text-tertiary) !important;
-        font-size: 0.82rem !important;
+        transform: translateY(0px) scale(0.94) !important;
     }
 
     /* ── Expanders ── */
