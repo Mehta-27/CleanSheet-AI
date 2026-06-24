@@ -58,7 +58,7 @@ Test all features before uploading to Gumroad.
 1. Create a Gumroad account at https://gumroad.com
 2. Create a new product:
    - **Name:** CleanSheet AI Pro
-   - **Price:** $9.99 (one-time)
+   - **Price:** $9 (one-time)
    - **Description:** Copy from README.md Pro section
    - **File:** Upload `dist\CleanSheet_AI_Pro.exe`
    - **License:** Enable Gumroad license keys (optional)
@@ -95,13 +95,13 @@ Test all features before uploading to Gumroad.
 1. User finds the free hosted version (Streamlit Cloud)
 2. Free version has "Get Pro" buttons in sidebar + export page
 3. User hits free limits (50MB, no Excel, no PDF)
-4. User clicks → Gumroad → $9.99 → downloads Pro EXE
+4. User clicks → Gumroad → $9 → downloads Pro EXE
 
 ## Pricing Strategy
 
 | | Free (Hosted) | Pro (EXE) |
 |---|---|---|
-| Price | $0 | $9.99 one-time |
+| Price | $0 | $9 one-time |
 | Where | streamlit.cloud | gumroad.com |
 | Users | Everyone | Power users |
 | Strategy | Traffic + lead gen | Revenue |

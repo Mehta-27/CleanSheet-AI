@@ -6,13 +6,13 @@
 ---
 
 ## One-Liner
-No-code CSV cleaning tool. Free hosted version drives traffic → Pro EXE ($9.99 on Gumroad).
+No-code CSV cleaning tool. Free hosted version drives traffic → Pro EXE ($9 on Gumroad).
 
 ## Business Model
 | Tier | Price | Distribution | Hosting Cost |
 |------|-------|-------------|--------------|
 | Free | $0 | Streamlit Community Cloud | $0 |
-| Pro | $9.99 one-time | Gumroad (downloadable EXE) | $0 |
+| Pro | $9 one-time | Gumroad (downloadable EXE) | $0 |
 
 ---
 
@@ -34,7 +34,7 @@ No-code CSV cleaning tool. Free hosted version drives traffic → Pro EXE ($9.99
 | Cleaning history log | `app.py` (session state) |
 | Buy Me a Coffee + Upgrade to Pro buttons | `app.py` (sidebar) |
 
-### Pro (downloadable EXE — sold on Gumroad for $9.99)
+### Pro (downloadable EXE — sold on Gumroad for $9)
 | Feature | File |
 |---------|------|
 | Excel (.xlsx) import/export | `src/loader.py`, `src/exporter.py` |
@@ -188,7 +188,7 @@ pyinstaller --onefile --windowed --name "CleanSheet_AI_Pro" app.py
 ## Go-to-Market
 
 1. Deploy free version to Streamlit Community Cloud (`cleansheet-ai.streamlit.app`)
-2. List Pro on Gumroad at $9.99
+2. List Pro on Gumroad at $9
 3. Promote free tool on Reddit (r/datasets, r/dataanalysis), Product Hunt, Indie Hackers
 4. Free users hit 50MB limit → click "Get Pro" → Gumroad checkout
 
