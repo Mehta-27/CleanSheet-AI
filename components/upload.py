@@ -17,7 +17,7 @@ def render_upload() -> None:
     subtitle = (
         "CleanSheet AI Pro — Premium Version. Unlimited cleaning and exports."
         if _is_pro()
-        else "Upload a messy CSV. Get a clean dataset in under 60 seconds. <span style='color:var(--accent-emerald); font-weight:600;'>Free, no sign-up required.</span>"
+        else "Upload a messy CSV. Get a clean dataset in under 60 seconds. <span style='color:var(--accent-green); font-weight:600;'>Free, no sign-up required.</span>"
     )
     st.markdown(
         f"<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
@@ -29,6 +29,16 @@ def render_upload() -> None:
 
     limit = _file_limit()
 
+    st.markdown(
+        "<div class='upload-head'>"
+        "<span class='upload-head-icon'>📂</span>"
+        "<div class='upload-head-title'>Drop your file here</div>"
+        "<div class='upload-head-sub'>CSV, TSV &bull; up to "
+        + str(limit)
+        + " MB</div>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
     uploaded = st.file_uploader(
         "Choose a CSV or TSV file",
         type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
