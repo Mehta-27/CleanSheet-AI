@@ -100,7 +100,7 @@ def main() -> None:
             steps_html = "<div style='display:flex; align-items:center; gap:4px; margin:0.6rem 0 0.3rem 0;'>"
             for i, key in enumerate(PAGE_ORDER):
                 if i == current_idx:
-                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--accent-blue);flex-shrink:0;'></div>"
+                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--accent-purple);flex-shrink:0;'></div>"
                 elif i < current_idx:
                     dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--accent-green);opacity:0.7;flex-shrink:0;'></div>"
                 else:

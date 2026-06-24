@@ -11,26 +11,26 @@ FONTS = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;50
 
 # ── Design Tokens ─────────────────────────────────────────────────────────
 DARK_TOKENS = """
-    --bg-primary: #111318;
-    --bg-secondary: #1A1D24;
-    --bg-tertiary: #22252E;
-    --bg-card: #1A1D24;
-    --bg-card-hover: #22252E;
-    --bg-sidebar: #15171E;
+    --bg-primary: #0F0E17;
+    --bg-secondary: #1A192B;
+    --bg-tertiary: #232136;
+    --bg-card: #1A192B;
+    --bg-card-hover: #232136;
+    --bg-sidebar: #121121;
     --border-subtle: rgba(255, 255, 255, 0.07);
     --border-medium: rgba(255, 255, 255, 0.12);
-    --border-focus: #3B82F6;
+    --border-focus: #A78BFA;
     --text-primary: #E2E8F0;
     --text-secondary: #8B95A5;
     --text-tertiary: #5A6374;
     --text-heading: #F1F5F9;
-    --accent-blue: #3B82F6;
-    --accent-teal: #14B8A6;
+    --accent-purple: #A78BFA;
+    --accent-pink: #F472B6;
     --accent-amber: #E5A019;
     --accent-green: #22C55E;
     --accent-red: #EF4444;
     --accent-orange: #F97316;
-    --gradient-btn: linear-gradient(135deg, #3B82F6, #2563EB);
+    --gradient-btn: linear-gradient(135deg, #A78BFA, #7C3AED);
     --gradient-pro: linear-gradient(135deg, #E5A019, #D97706);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -48,18 +48,18 @@ LIGHT_TOKENS = """
     --bg-sidebar: #FFFFFF;
     --border-subtle: rgba(0, 0, 0, 0.07);
     --border-medium: rgba(0, 0, 0, 0.12);
-    --border-focus: #3B82F6;
+    --border-focus: #8B5CF6;
     --text-primary: #1A202C;
     --text-secondary: #64748B;
     --text-tertiary: #94A3B8;
     --text-heading: #0F172A;
-    --accent-blue: #2563EB;
-    --accent-teal: #0D9488;
+    --accent-purple: #8B5CF6;
+    --accent-pink: #EC4899;
     --accent-amber: #D97706;
     --accent-green: #16A34A;
     --accent-red: #DC2626;
     --accent-orange: #EA580C;
-    --gradient-btn: linear-gradient(135deg, #2563EB, #1D4ED8);
+    --gradient-btn: linear-gradient(135deg, #8B5CF6, #6D28D9);
     --gradient-pro: linear-gradient(135deg, #D97706, #B45309);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -137,7 +137,7 @@ COMPONENT_CSS = """
         letter-spacing: -0.01em !important;
     }
     p, span, label, div { color: var(--text-primary); }
-    a { color: var(--accent-blue) !important; text-decoration: none !important; }
+    a { color: var(--accent-purple) !important; text-decoration: none !important; }
     a:hover { text-decoration: underline !important; }
     hr { border-color: var(--border-subtle) !important; margin: 1rem 0 !important; }
 
@@ -153,7 +153,7 @@ COMPONENT_CSS = """
         position: absolute;
         top: 0; left: 0;
         width: 2px; height: 100%;
-        background: var(--accent-blue);
+        background: var(--accent-purple);
         z-index: 10;
     }
     [data-testid="stSidebarCollapsedControl"],
@@ -232,7 +232,7 @@ COMPONENT_CSS = """
         transition: border-color 0.2s ease !important;
         background: var(--bg-card) !important;
     }
-    [data-testid="stFileUploader"]:hover { border-color: var(--accent-blue) !important; }
+    [data-testid="stFileUploader"]:hover { border-color: var(--accent-purple) !important; }
     [data-testid="stFileUploader"] button { white-space: nowrap !important; }
     [data-testid="stFileUploader"] small { color: var(--text-tertiary) !important; }
     [data-testid="stFileUploader"] section { overflow: hidden !important; }
@@ -277,7 +277,7 @@ COMPONENT_CSS = """
         padding: 0.35rem 0.8rem !important;
         transition: all 0.15s ease !important;
     }
-    .stButton > button[kind="secondary"]:hover { border-color: var(--accent-blue) !important; }
+    .stButton > button[kind="secondary"]:hover { border-color: var(--accent-purple) !important; }
     .stDownloadButton > button {
         background: var(--gradient-btn) !important;
         color: white !important;
@@ -308,7 +308,7 @@ COMPONENT_CSS = """
     .stSelectbox > div > div:focus-within,
     .stMultiSelect > div > div:focus-within,
     .stTextInput > div > div > input:focus {
-        border-color: var(--accent-blue) !important;
+        border-color: var(--accent-purple) !important;
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
     }
     .stCheckbox label span { color: var(--text-primary) !important; }
@@ -333,7 +333,7 @@ COMPONENT_CSS = """
 
     /* ── Tabs ── */
     .stTabs [data-baseweb="tab"] { color: var(--text-secondary) !important; font-weight: 500 !important; font-size: 0.85rem !important; }
-    .stTabs [data-baseweb="tab"][aria-selected="true"] { color: var(--accent-blue) !important; }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] { color: var(--accent-purple) !important; }
 
     /* ── Toast ── */
     [data-testid="stToast"] {
@@ -367,7 +367,7 @@ COMPONENT_CSS = """
         color: var(--text-heading);
         margin-bottom: 1rem;
         padding-bottom: 0.4rem;
-        border-bottom: 2px solid var(--accent-blue);
+        border-bottom: 2px solid var(--accent-purple);
     }
 
     .feature-pill {
@@ -414,7 +414,7 @@ COMPONENT_CSS = """
         justify-content: center;
         min-width: 20px; height: 20px;
         border-radius: 50%;
-        background: var(--accent-blue);
+        background: var(--accent-purple);
         color: white;
         font-size: 0.65rem;
         font-weight: 700;
@@ -448,7 +448,7 @@ COMPONENT_CSS = """
         font-size: 0.7rem;
         font-weight: 600;
         background: rgba(59, 130, 246, 0.1);
-        color: var(--accent-blue);
+        color: var(--accent-purple);
         border: 1px solid rgba(59, 130, 246, 0.15);
     }
 
@@ -502,7 +502,7 @@ COMPONENT_CSS = """
         border-radius: var(--radius-md) !important;
         padding: 0.85rem !important;
         margin: 0.4rem 0 !important;
-        border-left: 3px solid var(--accent-teal) !important;
+        border-left: 3px solid var(--accent-pink) !important;
         transition: all 0.2s ease !important;
     }
     .support-card:hover {
@@ -555,7 +555,7 @@ COMPONENT_CSS = """
         animation: fadeSlideIn 0.3s ease;
     }
     .feedback-banner.success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); color: var(--accent-green); }
-    .feedback-banner.info { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); color: var(--accent-blue); }
+    .feedback-banner.info { background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.25); color: var(--accent-purple); }
     .feedback-banner.warning { background: rgba(229, 160, 25, 0.1); border: 1px solid rgba(229, 160, 25, 0.25); color: var(--accent-amber); }
     .feedback-banner.error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--accent-red); }
     @keyframes fadeSlideIn {
@@ -570,7 +570,7 @@ COMPONENT_CSS = """
         color: var(--text-heading) !important;
         letter-spacing: -0.03em !important;
         margin-bottom: 0.4rem !important;
-        background: linear-gradient(135deg, var(--text-heading) 40%, var(--accent-blue)) !important;
+        background: linear-gradient(135deg, var(--text-heading) 40%, var(--accent-purple)) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         text-align: center !important;
@@ -614,11 +614,11 @@ def get_plotly_theme() -> dict:
             "paper_bgcolor": "rgba(0,0,0,0)",
             "plot_bgcolor": "rgba(0,0,0,0)",
             "font_color": "#8B95A5",
-            "colorway": ["#3B82F6", "#14B8A6", "#E5A019", "#22C55E", "#EF4444", "#A78BFA"],
+            "colorway": ["#A78BFA", "#F472B6", "#E5A019", "#22C55E", "#EF4444", "#60A5FA"],
         }
     return {
         "paper_bgcolor": "rgba(0,0,0,0)",
         "plot_bgcolor": "rgba(0,0,0,0)",
         "font_color": "#64748B",
-        "colorway": ["#2563EB", "#0D9488", "#D97706", "#16A34A", "#DC2626", "#7C3AED"],
+        "colorway": ["#8B5CF6", "#EC4899", "#D97706", "#16A34A", "#DC2626", "#3B82F6"],
     }

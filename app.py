@@ -73,7 +73,7 @@ def main() -> None:
                 if i == current_idx:
                     dot = (
                         f"<div style='width:28px; height:6px; border-radius:999px; "
-                        f"background:var(--accent-blue); flex-shrink:0;'></div>"
+                        f"background:var(--accent-purple); flex-shrink:0;'></div>"
                     )
                 elif i < current_idx:
                     dot = (
