@@ -223,19 +223,74 @@ COMPONENT_CSS = """
     }
     [data-testid="stMetric"] [data-testid="stMetricDelta"] { font-weight: 600 !important; }
 
-    /* ── File Uploader ── */
+    /* ── File Uploader — large, centered, satisfying drop zone ── */
     [data-testid="stFileUploader"] {
+        max-width: 520px !important;
+        margin: 0 auto !important;
         border: 2px dashed var(--border-medium) !important;
-        border-radius: var(--radius-lg) !important;
-        padding: 1.2rem !important;
+        border-radius: 16px !important;
+        padding: 0 !important;
         text-align: center !important;
-        transition: border-color 0.2s ease !important;
         background: var(--bg-card) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+        position: relative !important;
+        overflow: hidden !important;
     }
-    [data-testid="stFileUploader"]:hover { border-color: var(--accent-purple) !important; }
-    [data-testid="stFileUploader"] button { white-space: nowrap !important; }
-    [data-testid="stFileUploader"] small { color: var(--text-tertiary) !important; }
-    [data-testid="stFileUploader"] section { overflow: hidden !important; }
+    [data-testid="stFileUploader"]:hover {
+        border-color: var(--accent-purple) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(167, 139, 250, 0.12);
+    }
+    [data-testid="stFileUploader"]:active {
+        transform: translateY(0px) scale(0.98) !important;
+    }
+    [data-testid="stFileUploader"] section {
+        border: none !important;
+        padding: 2.5rem 2rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+    [data-testid="stFileUploader"] section::before {
+        content: '📂';
+        font-size: 3rem;
+        line-height: 1;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: block;
+    }
+    [data-testid="stFileUploader"]:hover section::before {
+        transform: scale(1.15) translateY(-4px);
+    }
+    [data-testid="stFileUploader"] section > span:first-of-type {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        color: var(--text-heading) !important;
+    }
+    [data-testid="stFileUploader"] button {
+        background: var(--gradient-btn) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        margin-top: 0.3rem !important;
+    }
+    [data-testid="stFileUploader"] button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(167, 139, 250, 0.3) !important;
+    }
+    [data-testid="stFileUploader"] button:active {
+        transform: translateY(0px) scale(0.96) !important;
+    }
+    [data-testid="stFileUploader"] small {
+        color: var(--text-tertiary) !important;
+        font-size: 0.82rem !important;
+    }
 
     /* ── Expanders ── */
     [data-testid="stExpander"] {

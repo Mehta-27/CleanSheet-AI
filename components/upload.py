@@ -28,6 +28,7 @@ def render_upload() -> None:
     )
 
     limit = _file_limit()
+
     uploaded = st.file_uploader(
         "Choose a CSV or TSV file",
         type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
