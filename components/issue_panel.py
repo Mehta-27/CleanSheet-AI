@@ -6,10 +6,28 @@ from src.styles import get_plotly_theme
 from src.utils import logger
 
 
+def _render_feedback() -> None:
+    fb = st.session_state.pop("_fb", None)
+    if fb is None:
+        return
+    fb_type, fb_msg = fb
+    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
+    icon = icon_map.get(fb_type, "✅")
+    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
+    st.markdown(
+        f"<div class='feedback-banner {cls}'>"
+        f"<span>{icon}</span><span>{fb_msg}</span>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_issues() -> None:
     df = st.session_state.df
     profile = profile_dataset(df)
     theme = get_plotly_theme()
+
+    _render_feedback()
 
     st.markdown(
         "<div class='section-header'>🚩 Data Quality Issues</div>",
@@ -120,14 +138,14 @@ def render_issues() -> None:
         st.markdown(
             "<div style='text-align:center; padding:2rem;'>"
             "<div style='font-size:3rem; margin-bottom:0.5rem;'>✅</div>"
-            "<p style='font-size:1.1rem; font-weight:600; color:var(--accent-emerald);'>"
+            "<p style='font-size:1.1rem; font-weight:600; color:var(--accent-green);'>"
             "No data quality issues detected!</p>"
             "<p style='color:var(--text-secondary); font-size:0.88rem;'>"
             "Your data looks clean. You're ready to export.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
-        st.balloons()
+        st.toast("✨ Your data is clean! No issues detected.", icon="✅")
 
     st.markdown("---")
     c1, c2 = st.columns(2)

@@ -8,6 +8,7 @@ st.set_page_config(
 )
 
 from src.styles import inject_css
+from src.analytics import inject_google_tag
 from components.upload import render_upload
 from components.overview import render_overview
 from components.issue_panel import render_issues
@@ -34,6 +35,7 @@ STEP_ICONS = {
 
 
 def main() -> None:
+    inject_google_tag()
     inject_css()
 
     # ── Init state ──

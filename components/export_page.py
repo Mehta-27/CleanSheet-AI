@@ -8,11 +8,29 @@ def _is_pro() -> bool:
     return st.session_state.get("_pro", False)
 
 
+def _render_feedback() -> None:
+    fb = st.session_state.pop("_fb", None)
+    if fb is None:
+        return
+    fb_type, fb_msg = fb
+    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
+    icon = icon_map.get(fb_type, "✅")
+    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
+    st.markdown(
+        f"<div class='feedback-banner {cls}'>"
+        f"<span>{icon}</span><span>{fb_msg}</span>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_export() -> None:
     df = st.session_state.df
     log = st.session_state.get("cleaning_log", [])
     profile = profile_dataset(df)
     before = profile_dataset(st.session_state.get("df_original", df))
+
+    _render_feedback()
 
     st.markdown(
         "<div class='section-header'>📥 Export Cleaned Data</div>",

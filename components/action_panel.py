@@ -8,10 +8,32 @@ from src.utils import CLEANING_METHODS, TEXT_OPERATIONS
 from src.exporter import to_csv_bytes
 
 
+def _feedback(msg: str, type: str = "success") -> None:
+    st.session_state["_fb"] = (type, msg)
+
+
+def _render_feedback() -> None:
+    fb = st.session_state.pop("_fb", None)
+    if fb is None:
+        return
+    fb_type, fb_msg = fb
+    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
+    icon = icon_map.get(fb_type, "✅")
+    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
+    st.markdown(
+        f"<div class='feedback-banner {cls}'>"
+        f"<span>{icon}</span><span>{fb_msg}</span>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_clean() -> None:
     df = st.session_state.df
     original = st.session_state.get("df_original", df)
     log = st.session_state.setdefault("cleaning_log", [])
+
+    _render_feedback()
 
     st.markdown(
         "<div class='section-header'>🧹 Clean Your Data</div>",
@@ -47,7 +69,8 @@ def render_clean() -> None:
         )
         dup_subset = dup_cols if dup_cols else None
         if st.button("Remove Duplicates", type="primary", key="btn_dup"):
-            new_df = remove_duplicates(df, subset=dup_subset)
+            with st.spinner("Removing duplicates..."):
+                new_df = remove_duplicates(df, subset=dup_subset)
             dup_removed = len(df) - len(new_df)
             if dup_removed > 0:
                 st.session_state.df = new_df
@@ -55,10 +78,11 @@ def render_clean() -> None:
                     f"Removed {dup_removed:,} duplicate rows"
                     f"{' on selected columns' if dup_cols else ''}"
                 )
-                st.success(f"Removed {dup_removed:,} duplicates!")
+                _feedback(f"Removed {dup_removed:,} duplicate rows!")
                 st.rerun()
             else:
-                st.info("No duplicates found.")
+                _feedback("No duplicates found in the dataset.", "info")
+                st.rerun()
 
     # ── Handle Missing Values ──
     with st.container(border=True):
@@ -81,40 +105,46 @@ def render_clean() -> None:
         )
         fill_val = None
         if strategy == "value":
-            fill_val = st.text_input("Fill with value:", key="fill_val")
+            fill_val = st.text_input("Fill with value:", key="fill_val",
+                                     placeholder="e.g. N/A, 0, Unknown...")
         miss_subset = miss_cols if miss_cols else None
+
         if st.button("Apply Missing Value Fix", type="primary", key="btn_miss"):
-            if strategy == "drop":
-                new_df = drop_missing(df, columns=miss_subset)
-                dropped = len(df) - len(new_df)
-                st.session_state.df = new_df
-                log.append(f"Dropped {dropped:,} rows with missing values")
-                st.success(f"Dropped {dropped:,} rows!")
-            elif strategy == "value" and fill_val:
-                new_df = fill_missing(df, strategy="value", columns=miss_subset, fill_value=fill_val)
-                st.session_state.df = new_df
-                log.append(f"Filled missing values with '{fill_val}'")
-                st.success("Missing values filled!")
-            else:
-                if strategy in ("mean", "median") and miss_subset:
-                    non_numeric = [
-                        c for c in miss_subset
-                        if not pd.api.types.is_numeric_dtype(df[c])
-                    ]
-                    if non_numeric:
-                        st.warning(
-                            f"Skipping non-numeric columns: {', '.join(non_numeric)}. "
-                            f"Use 'mode' or 'value' strategy instead."
-                        )
-                        filtered_cols = [c for c in miss_subset if c not in non_numeric]
-                        if not filtered_cols:
-                            st.stop()
-                        miss_subset = filtered_cols
-                new_df = fill_missing(df, strategy=strategy, columns=miss_subset)
-                st.session_state.df = new_df
-                log.append(f"Applied '{strategy}' filling to missing values")
-                st.success(f"Missing values filled using '{strategy}'!")
-            st.rerun()
+            with st.spinner("Processing missing values..."):
+                if strategy == "drop":
+                    new_df = drop_missing(df, columns=miss_subset)
+                    dropped = len(df) - len(new_df)
+                    st.session_state.df = new_df
+                    log.append(f"Dropped {dropped:,} rows with missing values")
+                    _feedback(f"Dropped {dropped:,} rows with missing values!")
+                    st.rerun()
+                elif strategy == "value" and fill_val:
+                    new_df = fill_missing(df, strategy="value", columns=miss_subset, fill_value=fill_val)
+                    st.session_state.df = new_df
+                    log.append(f"Filled missing values with '{fill_val}'")
+                    _feedback(f"Missing values filled with '{fill_val}'!")
+                    st.rerun()
+                else:
+                    if strategy in ("mean", "median") and miss_subset:
+                        non_numeric = [
+                            c for c in miss_subset
+                            if not pd.api.types.is_numeric_dtype(df[c])
+                        ]
+                        if non_numeric:
+                            _feedback(
+                                f"Skipped non-numeric columns: {', '.join(non_numeric)}. "
+                                f"Use 'mode' or 'value' instead.",
+                                "warning",
+                            )
+                            filtered_cols = [c for c in miss_subset if c not in non_numeric]
+                            if not filtered_cols:
+                                st.rerun()
+                            miss_subset = filtered_cols
+                    new_df = fill_missing(df, strategy=strategy, columns=miss_subset)
+                    st.session_state.df = new_df
+                    log.append(f"Applied '{strategy}' filling to missing values")
+                    _feedback(f"Missing values filled using '{CLEANING_METHODS[strategy]}'!")
+                    st.rerun()
 
     # ── Standardize Text ──
     with st.container(border=True):
@@ -139,20 +169,29 @@ def render_clean() -> None:
             with t2:
                 do_title = st.checkbox("Convert to Title Case", key="t_title")
                 do_special = st.checkbox("Remove special characters", key="t_special")
-            find_text = st.text_input("Find (optional):", key="t_find")
-            replace_text = st.text_input("Replace with:", key="t_replace")
+            find_text = st.text_input("Find (optional):", key="t_find", placeholder="Text to find...")
+            replace_text = st.text_input("Replace with:", key="t_replace", placeholder="Replacement text...")
             fr_pair = (find_text, replace_text) if find_text else None
 
             if st.button("Apply Text Standardization", type="primary", key="btn_text"):
-                new_df = standardize_text(
-                    df, columns=text_cols,
-                    strip=do_strip, lowercase=do_lower,
-                    uppercase=do_upper, title_case=do_title,
-                    remove_special=do_special, find_replace=fr_pair,
-                )
+                with st.spinner("Standardizing text..."):
+                    new_df = standardize_text(
+                        df, columns=text_cols,
+                        strip=do_strip, lowercase=do_lower,
+                        uppercase=do_upper, title_case=do_title,
+                        remove_special=do_special, find_replace=fr_pair,
+                    )
                 st.session_state.df = new_df
-                log.append(f"Standardized text in {len(text_cols)} columns")
-                st.success("Text standardized!")
+                log_details = []
+                if do_strip: log_details.append("stripped")
+                if do_lower: log_details.append("lowercase")
+                if do_upper: log_details.append("UPPERCASE")
+                if do_title: log_details.append("Title Case")
+                if do_special: log_details.append("no special chars")
+                if fr_pair: log_details.append(f"replaced '{find_text}'→'{replace_text}'")
+                log_text = ", ".join(log_details) if log_details else "standardized"
+                log.append(f"Standardized text in {len(text_cols)} columns ({log_text})")
+                _feedback(f"Text standardized in {len(text_cols)} columns!")
                 st.rerun()
 
     # ── Convert Data Types ──
@@ -177,10 +216,11 @@ def render_clean() -> None:
                 if chosen and chosen != "— keep as is —":
                     type_map[col] = chosen
         if type_map and st.button("Apply Type Conversions", type="primary", key="btn_types"):
-            new_df = convert_types(df, type_map)
+            with st.spinner("Converting types..."):
+                new_df = convert_types(df, type_map)
             st.session_state.df = new_df
             log.append(f"Converted types for {len(type_map)} columns")
-            st.success("Types converted!")
+            _feedback(f"Types converted for {len(type_map)} columns!")
             st.rerun()
 
     st.markdown("---")
@@ -195,6 +235,8 @@ def render_clean() -> None:
             st.rerun()
     with c3:
         if st.button("↩ Reset to Original", use_container_width=True):
-            st.session_state.df = original.copy()
+            with st.spinner("Resetting to original data..."):
+                st.session_state.df = original.copy()
             st.session_state.cleaning_log = []
+            _feedback("Data reset to original state!")
             st.rerun()

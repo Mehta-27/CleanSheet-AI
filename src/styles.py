@@ -78,11 +78,14 @@ ANIMATIONS = """
 
 # ── Component Styles ──────────────────────────────────────────────────────
 COMPONENT_CSS = """
-    /* ── Typography ── */
-    *:not(.material-symbols-rounded):not(.material-symbols-outlined):not([data-testid="stSidebarCollapsedControl"] *):not([data-testid="stIcon"]):not([data-testid="stIcon"] *):not([data-testid="stFileUploader"] span),
-    *:not(.material-symbols-rounded):not(.material-symbols-outlined)::before,
-    *:not(.material-symbols-rounded):not(.material-symbols-outlined)::after {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    /* ── Global Box Sizing ── */
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+
+    /* ── Typography (emoji-safe) ── */
+    body, .stApp, p, span, label, h1, h2, h3, h4, h5, h6, div, a, li, strong, em, small, code, pre, th, td, input, textarea, select, option, button {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
     }
     .material-symbols-rounded,
     .material-symbols-outlined,
@@ -95,6 +98,13 @@ COMPONENT_CSS = """
     .stApp {
         background: var(--bg-primary) !important;
         color: var(--text-primary) !important;
+        overflow-x: hidden !important;
+    }
+
+    .main .block-container {
+        max-width: 1200px !important;
+        padding: 2rem 2rem !important;
+        margin: 0 auto !important;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -145,24 +155,52 @@ COMPONENT_CSS = """
     }
 
     /* ── Cards / Containers ── */
-    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlockBorder"] {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-subtle) !important;
-        border-radius: var(--radius-md) !important;
-        padding: 1rem 1.25rem !important;
-        transition: border-color 0.15s ease !important;
-    }
-    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlockBorder"]:hover {
-        border-color: var(--border-medium) !important;
-    }
-
-    /* ── Metrics ── */
-    [data-testid="stMetric"] {
+    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorder"] {
         background: var(--bg-card) !important;
         border: 1px solid var(--border-subtle) !important;
         border-radius: var(--radius-md) !important;
         padding: 0.75rem 1rem !important;
         transition: border-color 0.15s ease !important;
+        overflow: hidden !important;
+    }
+    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorder"]:hover {
+        border-color: var(--border-medium) !important;
+    }
+
+    /* Prevent nested container padding stacking */
+    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlockBorder"] div[data-testid="stVerticalBlockBorder"] {
+        padding: 0.5rem 0.75rem !important;
+        background: var(--bg-tertiary) !important;
+    }
+
+    /* Column spacing fix — prevent overflow */
+    section[data-testid="stMain"] div[data-testid="column"] {
+        min-width: 0 !important;
+    }
+
+    /* Ensure columns don't overflow on narrow screens */
+    div.row-widget.stHorizontal {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Fix expander overflow */
+    [data-testid="stExpander"] [data-testid="stVerticalBlock"] {
+        overflow: hidden !important;
+    }
+
+    /* ── Metrics ── */
+    div[data-testid="stMetricRow"] {
+        gap: 0.5rem !important;
+    }
+    [data-testid="stMetric"] {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 0.6rem 0.85rem !important;
+        transition: border-color 0.15s ease !important;
+        overflow: hidden !important;
+        min-width: 0 !important;
     }
     [data-testid="stMetric"]:hover {
         border-color: var(--border-medium) !important;
@@ -170,14 +208,17 @@ COMPONENT_CSS = """
     [data-testid="stMetric"] [data-testid="stMetricLabel"] {
         color: var(--text-secondary) !important;
         font-weight: 500 !important;
-        font-size: 0.78rem !important;
+        font-size: 0.72rem !important;
         text-transform: uppercase !important;
         letter-spacing: 0.04em !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         color: var(--text-heading) !important;
         font-weight: 700 !important;
-        font-size: 1.5rem !important;
+        font-size: 1.35rem !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricDelta"] {
         font-weight: 600 !important;
@@ -191,6 +232,8 @@ COMPONENT_CSS = """
         text-align: center !important;
         transition: border-color 0.2s ease !important;
         background: var(--bg-card) !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
     }
     [data-testid="stFileUploader"]:hover {
         border-color: var(--accent-blue) !important;
@@ -200,6 +243,14 @@ COMPONENT_CSS = """
     }
     [data-testid="stFileUploader"] small {
         color: var(--text-tertiary) !important;
+    }
+    [data-testid="stFileUploader"] section {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    [data-testid="stFileUploader"] div[data-testid="stMarkdown"] {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     /* ── Expanders ── */
@@ -310,6 +361,10 @@ COMPONENT_CSS = """
         border: 1px solid var(--border-subtle) !important;
         color: var(--text-primary) !important;
         border-radius: var(--radius-md) !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+    }
+    [data-testid="stToast"] [data-testid="stMarkdown"] p {
+        font-family: inherit !important;
     }
 
     /* ── Scrollbar ── */
@@ -492,7 +547,8 @@ COMPONENT_CSS = """
         padding: 1.25rem;
         text-align: center;
         transition: all 0.2s ease !important;
-        height: 100%;
+        height: auto !important;
+        min-height: 140px;
     }
     .feature-card:hover {
         border-color: var(--border-medium) !important;
@@ -513,6 +569,70 @@ COMPONENT_CSS = """
         margin: 0;
     }
 
+    /* ── Processing / Loading indicator ── */
+    .processing-overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.75rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        margin: 0.5rem 0;
+        color: var(--accent-blue);
+        font-weight: 500;
+        font-size: 0.88rem;
+    }
+    .processing-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border-medium);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ── Success/Feedback banners ── */
+    .feedback-banner {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.85rem;
+        border-radius: var(--radius-sm);
+        margin: 0.5rem 0;
+        font-weight: 500;
+        font-size: 0.85rem;
+        animation: fadeSlideIn 0.3s ease;
+    }
+    .feedback-banner.success {
+        background: rgba(34, 197, 94, 0.08);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: var(--accent-green);
+    }
+    .feedback-banner.info {
+        background: rgba(59, 130, 246, 0.08);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        color: var(--accent-blue);
+    }
+    .feedback-banner.warning {
+        background: rgba(229, 160, 25, 0.08);
+        border: 1px solid rgba(229, 160, 25, 0.2);
+        color: var(--accent-amber);
+    }
+    .feedback-banner.error {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--accent-red);
+    }
+    @keyframes fadeSlideIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── Onboarding / Hero Section ── */
     .hero-title {
         font-size: 2.4rem !important;
@@ -524,6 +644,8 @@ COMPONENT_CSS = """
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         text-align: center !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
     }
     .hero-subtitle {
         font-size: 1.05rem !important;
@@ -532,6 +654,9 @@ COMPONENT_CSS = """
         margin: 0 auto 1.5rem auto !important;
         line-height: 1.5 !important;
         text-align: center !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        padding: 0 1rem !important;
     }
 """
 

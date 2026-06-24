@@ -12,6 +12,7 @@ import streamlit.runtime.scriptrunner.magic_funcs
 import streamlit as st
 
 from src.styles import inject_css
+from src.analytics import inject_google_tag
 from components.upload import render_upload
 from components.overview import render_overview as free_render_overview
 from components.issue_panel import render_issues as free_render_issues
@@ -64,6 +65,7 @@ def main() -> None:
         layout="wide",
         initial_sidebar_state="expanded",
     )
+    inject_google_tag()
     inject_css()
 
     if "page" not in st.session_state:

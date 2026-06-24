@@ -20,3 +20,8 @@ sample_data/output/
 *.egg-info/
 .pytest_cache/
 stripe_backup_code.txt
+exe_output.txt
+marketing_posts.md
+run_test.bat
+nul
+*.pdf

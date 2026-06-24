@@ -12,7 +12,25 @@ def _file_limit() -> int:
     return MAX_FILE_SIZE_PRO_MB if _is_pro() else MAX_FILE_SIZE_MB
 
 
+def _render_feedback() -> None:
+    fb = st.session_state.pop("_fb", None)
+    if fb is None:
+        return
+    fb_type, fb_msg = fb
+    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
+    icon = icon_map.get(fb_type, "✅")
+    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
+    st.markdown(
+        f"<div class='feedback-banner {cls}'>"
+        f"<span>{icon}</span><span>{fb_msg}</span>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_upload() -> None:
+    _render_feedback()
+
     # ── Hero Section ──
     subtitle = (
         "CleanSheet AI Pro — Premium Version. Unlimited cleaning and exports."
@@ -32,6 +50,7 @@ def render_upload() -> None:
         "Choose a CSV or TSV file",
         type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
         help=f"Max file size: {limit} MB" + ("" if _is_pro() else " (upgrade to Pro for 500 MB)"),
+        label_visibility="collapsed",
     )
 
     if uploaded is None:
