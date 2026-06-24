@@ -8,24 +8,9 @@ from src.utils import CLEANING_METHODS, TEXT_OPERATIONS
 from src.exporter import to_csv_bytes
 
 
-def _feedback(msg: str, type: str = "success") -> None:
-    st.session_state["_fb"] = (type, msg)
-
-
-def _render_feedback() -> None:
-    fb = st.session_state.pop("_fb", None)
-    if fb is None:
-        return
-    fb_type, fb_msg = fb
-    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
-    icon = icon_map.get(fb_type, "✅")
-    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
-    st.markdown(
-        f"<div class='feedback-banner {cls}'>"
-        f"<span>{icon}</span><span>{fb_msg}</span>"
-        f"</div>",
-        unsafe_allow_html=True,
-    )
+def _fb(msg: str, icon: str = "✅") -> None:
+    st.session_state["_fb_msg"] = msg
+    st.session_state["_fb_icon"] = icon
 
 
 def render_clean() -> None:
@@ -33,7 +18,15 @@ def render_clean() -> None:
     original = st.session_state.get("df_original", df)
     log = st.session_state.setdefault("cleaning_log", [])
 
-    _render_feedback()
+    fb_msg = st.session_state.pop("_fb_msg", None)
+    fb_icon = st.session_state.pop("_fb_icon", "✅")
+    if fb_msg:
+        st.toast(fb_msg, icon=fb_icon)
+        st.markdown(
+            f"<div class='feedback-banner success'>"
+            f"<span>{fb_icon}</span><span>{fb_msg}</span></div>",
+            unsafe_allow_html=True,
+        )
 
     st.markdown(
         "<div class='section-header'>🧹 Clean Your Data</div>",
@@ -57,8 +50,8 @@ def render_clean() -> None:
     with st.container(border=True):
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
-            "<span style='font-size:1.3rem;'>🔁</span>"
-            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:1.2rem;'>🔁</span>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
             "Remove Duplicates</span></div>",
             unsafe_allow_html=True,
         )
@@ -69,27 +62,23 @@ def render_clean() -> None:
         )
         dup_subset = dup_cols if dup_cols else None
         if st.button("Remove Duplicates", type="primary", key="btn_dup"):
-            with st.spinner("Removing duplicates..."):
-                new_df = remove_duplicates(df, subset=dup_subset)
+            new_df = remove_duplicates(df, subset=dup_subset)
             dup_removed = len(df) - len(new_df)
             if dup_removed > 0:
                 st.session_state.df = new_df
-                log.append(
-                    f"Removed {dup_removed:,} duplicate rows"
-                    f"{' on selected columns' if dup_cols else ''}"
-                )
-                _feedback(f"Removed {dup_removed:,} duplicate rows!")
+                log.append(f"Removed {dup_removed:,} duplicate rows{' on selected columns' if dup_cols else ''}")
+                _fb(f"Removed {dup_removed:,} duplicate rows!")
                 st.rerun()
             else:
-                _feedback("No duplicates found in the dataset.", "info")
+                _fb("No duplicates found.", "ℹ️")
                 st.rerun()
 
     # ── Handle Missing Values ──
     with st.container(border=True):
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
-            "<span style='font-size:1.3rem;'>❓</span>"
-            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:1.2rem;'>❓</span>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
             "Handle Missing Values</span></div>",
             unsafe_allow_html=True,
         )
@@ -105,53 +94,44 @@ def render_clean() -> None:
         )
         fill_val = None
         if strategy == "value":
-            fill_val = st.text_input("Fill with value:", key="fill_val",
-                                     placeholder="e.g. N/A, 0, Unknown...")
+            fill_val = st.text_input("Fill with value:", key="fill_val", placeholder="e.g. N/A, 0, Unknown...")
         miss_subset = miss_cols if miss_cols else None
 
         if st.button("Apply Missing Value Fix", type="primary", key="btn_miss"):
-            with st.spinner("Processing missing values..."):
-                if strategy == "drop":
-                    new_df = drop_missing(df, columns=miss_subset)
-                    dropped = len(df) - len(new_df)
-                    st.session_state.df = new_df
-                    log.append(f"Dropped {dropped:,} rows with missing values")
-                    _feedback(f"Dropped {dropped:,} rows with missing values!")
-                    st.rerun()
-                elif strategy == "value" and fill_val:
-                    new_df = fill_missing(df, strategy="value", columns=miss_subset, fill_value=fill_val)
-                    st.session_state.df = new_df
-                    log.append(f"Filled missing values with '{fill_val}'")
-                    _feedback(f"Missing values filled with '{fill_val}'!")
-                    st.rerun()
-                else:
-                    if strategy in ("mean", "median") and miss_subset:
-                        non_numeric = [
-                            c for c in miss_subset
-                            if not pd.api.types.is_numeric_dtype(df[c])
-                        ]
-                        if non_numeric:
-                            _feedback(
-                                f"Skipped non-numeric columns: {', '.join(non_numeric)}. "
-                                f"Use 'mode' or 'value' instead.",
-                                "warning",
-                            )
-                            filtered_cols = [c for c in miss_subset if c not in non_numeric]
-                            if not filtered_cols:
-                                st.rerun()
-                            miss_subset = filtered_cols
-                    new_df = fill_missing(df, strategy=strategy, columns=miss_subset)
-                    st.session_state.df = new_df
-                    log.append(f"Applied '{strategy}' filling to missing values")
-                    _feedback(f"Missing values filled using '{CLEANING_METHODS[strategy]}'!")
-                    st.rerun()
+            if strategy == "drop":
+                new_df = drop_missing(df, columns=miss_subset)
+                dropped = len(df) - len(new_df)
+                st.session_state.df = new_df
+                log.append(f"Dropped {dropped:,} rows with missing values")
+                _fb(f"Dropped {dropped:,} rows!")
+                st.rerun()
+            elif strategy == "value" and fill_val:
+                new_df = fill_missing(df, strategy="value", columns=miss_subset, fill_value=fill_val)
+                st.session_state.df = new_df
+                log.append(f"Filled missing values with '{fill_val}'")
+                _fb(f"Filled with '{fill_val}'!")
+                st.rerun()
+            else:
+                if strategy in ("mean", "median") and miss_subset:
+                    non_numeric = [c for c in miss_subset if not pd.api.types.is_numeric_dtype(df[c])]
+                    if non_numeric:
+                        _fb(f"Skipped non-numeric: {', '.join(non_numeric)}. Use 'mode' or 'value'.", "⚠️")
+                        filtered_cols = [c for c in miss_subset if c not in non_numeric]
+                        if not filtered_cols:
+                            st.rerun()
+                        miss_subset = filtered_cols
+                new_df = fill_missing(df, strategy=strategy, columns=miss_subset)
+                st.session_state.df = new_df
+                log.append(f"Applied '{strategy}' filling to missing values")
+                _fb(f"Filled using {CLEANING_METHODS[strategy]}!")
+                st.rerun()
 
     # ── Standardize Text ──
     with st.container(border=True):
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
-            "<span style='font-size:1.3rem;'>✏️</span>"
-            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:1.2rem;'>✏️</span>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
             "Standardize Text</span></div>",
             unsafe_allow_html=True,
         )
@@ -174,13 +154,12 @@ def render_clean() -> None:
             fr_pair = (find_text, replace_text) if find_text else None
 
             if st.button("Apply Text Standardization", type="primary", key="btn_text"):
-                with st.spinner("Standardizing text..."):
-                    new_df = standardize_text(
-                        df, columns=text_cols,
-                        strip=do_strip, lowercase=do_lower,
-                        uppercase=do_upper, title_case=do_title,
-                        remove_special=do_special, find_replace=fr_pair,
-                    )
+                new_df = standardize_text(
+                    df, columns=text_cols,
+                    strip=do_strip, lowercase=do_lower,
+                    uppercase=do_upper, title_case=do_title,
+                    remove_special=do_special, find_replace=fr_pair,
+                )
                 st.session_state.df = new_df
                 log_details = []
                 if do_strip: log_details.append("stripped")
@@ -188,18 +167,18 @@ def render_clean() -> None:
                 if do_upper: log_details.append("UPPERCASE")
                 if do_title: log_details.append("Title Case")
                 if do_special: log_details.append("no special chars")
-                if fr_pair: log_details.append(f"replaced '{find_text}'→'{replace_text}'")
+                if fr_pair: log_details.append(f"replace '{find_text}'")
                 log_text = ", ".join(log_details) if log_details else "standardized"
-                log.append(f"Standardized text in {len(text_cols)} columns ({log_text})")
-                _feedback(f"Text standardized in {len(text_cols)} columns!")
+                log.append(f"Text standardized in {len(text_cols)} columns ({log_text})")
+                _fb(f"Text standardized ({len(text_cols)} cols)!")
                 st.rerun()
 
     # ── Convert Data Types ──
     with st.container(border=True):
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
-            "<span style='font-size:1.3rem;'>🔄</span>"
-            "<span style='font-size:1rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:1.2rem;'>🔄</span>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
             "Convert Data Types</span></div>",
             unsafe_allow_html=True,
         )
@@ -216,11 +195,10 @@ def render_clean() -> None:
                 if chosen and chosen != "— keep as is —":
                     type_map[col] = chosen
         if type_map and st.button("Apply Type Conversions", type="primary", key="btn_types"):
-            with st.spinner("Converting types..."):
-                new_df = convert_types(df, type_map)
+            new_df = convert_types(df, type_map)
             st.session_state.df = new_df
             log.append(f"Converted types for {len(type_map)} columns")
-            _feedback(f"Types converted for {len(type_map)} columns!")
+            _fb(f"Types converted ({len(type_map)} cols)!")
             st.rerun()
 
     st.markdown("---")
@@ -235,8 +213,7 @@ def render_clean() -> None:
             st.rerun()
     with c3:
         if st.button("↩ Reset to Original", use_container_width=True):
-            with st.spinner("Resetting to original data..."):
-                st.session_state.df = original.copy()
+            st.session_state.df = original.copy()
             st.session_state.cleaning_log = []
-            _feedback("Data reset to original state!")
+            _fb("Data reset to original!")
             st.rerun()

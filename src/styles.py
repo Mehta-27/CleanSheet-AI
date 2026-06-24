@@ -78,33 +78,48 @@ ANIMATIONS = """
 
 # ── Component Styles ──────────────────────────────────────────────────────
 COMPONENT_CSS = """
-    /* ── Global Box Sizing ── */
+    /* ── Box-sizing & overflow safety (prevents ALL layout breaking) ── */
     *, *::before, *::after {
         box-sizing: border-box !important;
+        max-width: 100% !important;
+    }
+    html, body, .stApp, #root {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100vw !important;
     }
 
-    /* ── Typography (emoji-safe) ── */
-    body, .stApp, p, span, label, h1, h2, h3, h4, h5, h6, div, a, li, strong, em, small, code, pre, th, td, input, textarea, select, option, button {
+    /* ── Typography (emoji-safe — covers everything) ── */
+    * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
     }
     .material-symbols-rounded,
-    .material-symbols-outlined,
-    [data-testid="stSidebarCollapsedControl"] span,
-    [data-testid="stSidebarNavCollapseButton"] span,
-    button[kind="header"] span {
+    .material-symbols-outlined {
         font-family: 'Material Symbols Rounded', sans-serif !important;
     }
 
     .stApp {
         background: var(--bg-primary) !important;
         color: var(--text-primary) !important;
-        overflow-x: hidden !important;
     }
 
     .main .block-container {
-        max-width: 1200px !important;
-        padding: 2rem 2rem !important;
+        max-width: 1100px !important;
+        padding: 1.5rem 1.5rem !important;
         margin: 0 auto !important;
+    }
+
+    /* Every column must respect its container */
+    div[data-testid="column"] {
+        min-width: 0 !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* Horizontal rows — wrap when tight */
+    div.row-widget.stHorizontal {
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -121,7 +136,8 @@ COMPONENT_CSS = """
     section[data-testid="stSidebar"] {
         background: var(--bg-sidebar) !important;
         border-right: 1px solid var(--border-subtle) !important;
-        min-width: 280px !important;
+        min-width: 260px !important;
+        max-width: 300px !important;
     }
     section[data-testid="stSidebar"]::before {
         content: '';
@@ -140,48 +156,28 @@ COMPONENT_CSS = """
     section[data-testid="stSidebar"] [data-testid="stMarkdown"] span,
     section[data-testid="stSidebar"] [data-testid="stMarkdown"] li {
         color: var(--text-secondary) !important;
-        font-size: 0.85rem !important;
+        font-size: 0.82rem !important;
     }
-    section[data-testid="stSidebar"] h1,
-    section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] h3,
-    section[data-testid="stSidebar"] h4,
-    section[data-testid="stSidebar"] h5 {
-        color: var(--text-heading) !important;
-    }
-    section[data-testid="stSidebar"] hr {
-        border-color: var(--border-subtle) !important;
-        margin: 0.75rem 0 !important;
-    }
+    section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3, section[data-testid="stSidebar"] h4,
+    section[data-testid="stSidebar"] h5 { color: var(--text-heading) !important; }
+    section[data-testid="stSidebar"] hr { border-color: var(--border-subtle) !important; margin: 0.6rem 0 !important; }
 
     /* ── Cards / Containers ── */
     div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorder"] {
         background: var(--bg-card) !important;
         border: 1px solid var(--border-subtle) !important;
         border-radius: var(--radius-md) !important;
-        padding: 0.75rem 1rem !important;
+        padding: 0.65rem 0.85rem !important;
         transition: border-color 0.15s ease !important;
         overflow: hidden !important;
     }
     div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorder"]:hover {
         border-color: var(--border-medium) !important;
     }
-
-    /* Prevent nested container padding stacking */
     div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlockBorder"] div[data-testid="stVerticalBlockBorder"] {
-        padding: 0.5rem 0.75rem !important;
+        padding: 0.4rem 0.6rem !important;
         background: var(--bg-tertiary) !important;
-    }
-
-    /* Column spacing fix — prevent overflow */
-    section[data-testid="stMain"] div[data-testid="column"] {
-        min-width: 0 !important;
-    }
-
-    /* Ensure columns don't overflow on narrow screens */
-    div.row-widget.stHorizontal {
-        flex-wrap: wrap !important;
-        gap: 0.5rem !important;
     }
 
     /* Fix expander overflow */
@@ -189,28 +185,23 @@ COMPONENT_CSS = """
         overflow: hidden !important;
     }
 
-    /* ── Metrics ── */
-    div[data-testid="stMetricRow"] {
-        gap: 0.5rem !important;
-    }
+    /* ── Metrics (compact, prevents overlap in 4-column rows) ── */
+    div[data-testid="stMetricRow"] { gap: 0.35rem !important; }
     [data-testid="stMetric"] {
         background: var(--bg-card) !important;
         border: 1px solid var(--border-subtle) !important;
         border-radius: var(--radius-md) !important;
-        padding: 0.6rem 0.85rem !important;
+        padding: 0.45rem 0.6rem !important;
         transition: border-color 0.15s ease !important;
         overflow: hidden !important;
-        min-width: 0 !important;
     }
-    [data-testid="stMetric"]:hover {
-        border-color: var(--border-medium) !important;
-    }
+    [data-testid="stMetric"]:hover { border-color: var(--border-medium) !important; }
     [data-testid="stMetric"] [data-testid="stMetricLabel"] {
         color: var(--text-secondary) !important;
         font-weight: 500 !important;
-        font-size: 0.72rem !important;
+        font-size: 0.65rem !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
+        letter-spacing: 0.03em !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -218,59 +209,39 @@ COMPONENT_CSS = """
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         color: var(--text-heading) !important;
         font-weight: 700 !important;
-        font-size: 1.35rem !important;
+        font-size: 1.15rem !important;
+        line-height: 1.2 !important;
     }
-    [data-testid="stMetric"] [data-testid="stMetricDelta"] {
-        font-weight: 600 !important;
-    }
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] { font-weight: 600 !important; }
 
     /* ── File Uploader ── */
     [data-testid="stFileUploader"] {
         border: 2px dashed var(--border-medium) !important;
         border-radius: var(--radius-lg) !important;
-        padding: 1.5rem !important;
+        padding: 1.2rem !important;
         text-align: center !important;
         transition: border-color 0.2s ease !important;
         background: var(--bg-card) !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
     }
-    [data-testid="stFileUploader"]:hover {
-        border-color: var(--accent-blue) !important;
-    }
-    [data-testid="stFileUploader"] button {
-        white-space: nowrap !important;
-    }
-    [data-testid="stFileUploader"] small {
-        color: var(--text-tertiary) !important;
-    }
-    [data-testid="stFileUploader"] section {
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-    [data-testid="stFileUploader"] div[data-testid="stMarkdown"] {
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
+    [data-testid="stFileUploader"]:hover { border-color: var(--accent-blue) !important; }
+    [data-testid="stFileUploader"] button { white-space: nowrap !important; }
+    [data-testid="stFileUploader"] small { color: var(--text-tertiary) !important; }
+    [data-testid="stFileUploader"] section { overflow: hidden !important; }
 
     /* ── Expanders ── */
     [data-testid="stExpander"] {
         border: 1px solid var(--border-subtle) !important;
         border-radius: var(--radius-md) !important;
         background: var(--bg-card) !important;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.4rem !important;
         transition: border-color 0.15s ease !important;
         overflow: hidden !important;
     }
-    [data-testid="stExpander"]:hover {
-        border-color: var(--border-medium) !important;
-    }
-    [data-testid="stExpander"] summary {
-        color: var(--text-primary) !important;
-        font-weight: 600 !important;
-    }
+    [data-testid="stExpander"]:hover { border-color: var(--border-medium) !important; }
+    [data-testid="stExpander"] summary { color: var(--text-primary) !important; font-weight: 600 !important; }
 
     /* ── Buttons ── */
+    .stButton > button { width: 100% !important; }
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="stBaseButton-primary"] {
         background: var(--gradient-btn) !important;
@@ -278,17 +249,13 @@ COMPONENT_CSS = """
         border: none !important;
         border-radius: var(--radius-sm) !important;
         font-weight: 600 !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        font-size: 0.85rem !important;
+        padding: 0.35rem 0.8rem !important;
+        transition: all 0.15s ease !important;
     }
-    .stButton > button[kind="primary"]:hover,
-    .stButton > button[data-testid="stBaseButton-primary"]:hover {
+    .stButton > button[kind="primary"]:hover {
         opacity: 0.95 !important;
-        transform: translateY(-1px) !important;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
-    }
-    .stButton > button[kind="primary"]:active,
-    .stButton > button[data-testid="stBaseButton-primary"]:active {
-        transform: translateY(0px) scale(0.98) !important;
     }
     .stButton > button[kind="secondary"],
     .stButton > button[data-testid="stBaseButton-secondary"] {
@@ -297,34 +264,29 @@ COMPONENT_CSS = """
         border: 1px solid var(--border-medium) !important;
         border-radius: var(--radius-sm) !important;
         font-weight: 500 !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        font-size: 0.85rem !important;
+        padding: 0.35rem 0.8rem !important;
+        transition: all 0.15s ease !important;
     }
-    .stButton > button[kind="secondary"]:hover,
-    .stButton > button[data-testid="stBaseButton-secondary"]:hover {
-        border-color: var(--accent-blue) !important;
-        transform: translateY(-1px) !important;
-        box-shadow: var(--shadow-sm) !important;
-    }
-    .stButton > button[kind="secondary"]:active,
-    .stButton > button[data-testid="stBaseButton-secondary"]:active {
-        transform: translateY(0px) scale(0.98) !important;
-    }
-
-    /* ── Download Buttons ── */
+    .stButton > button[kind="secondary"]:hover { border-color: var(--accent-blue) !important; }
     .stDownloadButton > button {
         background: var(--gradient-btn) !important;
         color: white !important;
         border: none !important;
         border-radius: var(--radius-sm) !important;
         font-weight: 600 !important;
-        transition: opacity 0.15s ease !important;
+        font-size: 0.85rem !important;
+        padding: 0.35rem 0.8rem !important;
     }
     .stDownloadButton > button:hover { opacity: 0.9 !important; }
 
     /* ── Inputs ── */
     [data-testid="stSelectbox"],
     [data-testid="stMultiSelect"],
-    [data-testid="stTextInput"] { color: var(--text-primary) !important; }
+    [data-testid="stTextInput"],
+    [data-testid="stSelectbox"] label,
+    [data-testid="stMultiSelect"] label,
+    [data-testid="stTextInput"] label { color: var(--text-primary) !important; }
     .stSelectbox > div > div,
     .stMultiSelect > div > div,
     .stTextInput > div > div > input {
@@ -332,6 +294,7 @@ COMPONENT_CSS = """
         border-color: var(--border-medium) !important;
         color: var(--text-primary) !important;
         border-radius: var(--radius-sm) !important;
+        font-size: 0.82rem !important;
     }
     .stSelectbox > div > div:focus-within,
     .stMultiSelect > div > div:focus-within,
@@ -341,18 +304,26 @@ COMPONENT_CSS = """
     }
     .stCheckbox label span { color: var(--text-primary) !important; }
 
-    /* ── Dataframes ── */
+    /* ── Dataframes (prevent overflow) ── */
     [data-testid="stDataFrame"] {
         border: 1px solid var(--border-subtle) !important;
         border-radius: var(--radius-md) !important;
-        overflow: hidden !important;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+    }
+    [data-testid="stDataFrame"] [data-testid="stDataFrameContainer"] {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+    [data-testid="stDataFrame"] table {
+        font-size: 0.78rem !important;
     }
 
     /* ── Alerts ── */
     [data-testid="stAlert"] { border-radius: var(--radius-sm) !important; }
 
     /* ── Tabs ── */
-    .stTabs [data-baseweb="tab"] { color: var(--text-secondary) !important; font-weight: 500 !important; }
+    .stTabs [data-baseweb="tab"] { color: var(--text-secondary) !important; font-weight: 500 !important; font-size: 0.85rem !important; }
     .stTabs [data-baseweb="tab"][aria-selected="true"] { color: var(--accent-blue) !important; }
 
     /* ── Toast ── */
@@ -361,10 +332,14 @@ COMPONENT_CSS = """
         border: 1px solid var(--border-subtle) !important;
         color: var(--text-primary) !important;
         border-radius: var(--radius-md) !important;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
     }
-    [data-testid="stToast"] [data-testid="stMarkdown"] p {
-        font-family: inherit !important;
+
+    /* ── Plotly charts ── */
+    .stPlotlyChart {
+        overflow: hidden !important;
+    }
+    .js-plotly-plot, .plot-container {
+        max-width: 100% !important;
     }
 
     /* ── Scrollbar ── */
@@ -544,90 +519,36 @@ COMPONENT_CSS = """
         background: var(--bg-card);
         border: 1px solid var(--border-subtle);
         border-radius: var(--radius-md);
-        padding: 1.25rem;
+        padding: 1rem;
         text-align: center;
         transition: all 0.2s ease !important;
-        height: auto !important;
-        min-height: 140px;
+        height: 100%;
     }
     .feature-card:hover {
         border-color: var(--border-medium) !important;
         transform: translateY(-2px) !important;
         box-shadow: var(--shadow-md) !important;
     }
-    .feature-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
-    .feature-card h4 {
-        font-size: 0.88rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-        color: var(--text-heading);
-    }
-    .feature-card p {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        line-height: 1.4;
-        margin: 0;
-    }
+    .feature-card .icon { font-size: 1.3rem; margin-bottom: 0.3rem; display: block; }
+    .feature-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-heading); }
+    .feature-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin: 0; }
 
-    /* ── Processing / Loading indicator ── */
-    .processing-overlay {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.6rem;
-        padding: 0.75rem;
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-radius: var(--radius-md);
-        margin: 0.5rem 0;
-        color: var(--accent-blue);
-        font-weight: 500;
-        font-size: 0.88rem;
-    }
-    .processing-spinner {
-        width: 18px;
-        height: 18px;
-        border: 2px solid var(--border-medium);
-        border-top-color: var(--accent-blue);
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* ── Success/Feedback banners ── */
+    /* ── Feedback / success banner (inline, survives reruns) ── */
     .feedback-banner {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.6rem 0.85rem;
+        padding: 0.5rem 0.75rem;
         border-radius: var(--radius-sm);
-        margin: 0.5rem 0;
+        margin: 0.4rem 0;
         font-weight: 500;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         animation: fadeSlideIn 0.3s ease;
     }
-    .feedback-banner.success {
-        background: rgba(34, 197, 94, 0.08);
-        border: 1px solid rgba(34, 197, 94, 0.2);
-        color: var(--accent-green);
-    }
-    .feedback-banner.info {
-        background: rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        color: var(--accent-blue);
-    }
-    .feedback-banner.warning {
-        background: rgba(229, 160, 25, 0.08);
-        border: 1px solid rgba(229, 160, 25, 0.2);
-        color: var(--accent-amber);
-    }
-    .feedback-banner.error {
-        background: rgba(239, 68, 68, 0.08);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: var(--accent-red);
-    }
+    .feedback-banner.success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); color: var(--accent-green); }
+    .feedback-banner.info { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); color: var(--accent-blue); }
+    .feedback-banner.warning { background: rgba(229, 160, 25, 0.1); border: 1px solid rgba(229, 160, 25, 0.25); color: var(--accent-amber); }
+    .feedback-banner.error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--accent-red); }
     @keyframes fadeSlideIn {
         from { opacity: 0; transform: translateY(-6px); }
         to { opacity: 1; transform: translateY(0); }
@@ -635,28 +556,25 @@ COMPONENT_CSS = """
 
     /* ── Onboarding / Hero Section ── */
     .hero-title {
-        font-size: 2.4rem !important;
+        font-size: 2rem !important;
         font-weight: 800 !important;
         color: var(--text-heading) !important;
         letter-spacing: -0.03em !important;
-        margin-bottom: 0.6rem !important;
+        margin-bottom: 0.4rem !important;
         background: linear-gradient(135deg, var(--text-heading) 40%, var(--accent-blue)) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         text-align: center !important;
         word-break: break-word !important;
-        overflow-wrap: break-word !important;
     }
     .hero-subtitle {
-        font-size: 1.05rem !important;
+        font-size: 0.95rem !important;
         color: var(--text-secondary) !important;
-        max-width: 600px !important;
-        margin: 0 auto 1.5rem auto !important;
+        max-width: 540px !important;
+        margin: 0 auto 1.2rem auto !important;
         line-height: 1.5 !important;
         text-align: center !important;
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
-        padding: 0 1rem !important;
+        padding: 0 0.5rem !important;
     }
 """
 

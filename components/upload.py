@@ -12,25 +12,7 @@ def _file_limit() -> int:
     return MAX_FILE_SIZE_PRO_MB if _is_pro() else MAX_FILE_SIZE_MB
 
 
-def _render_feedback() -> None:
-    fb = st.session_state.pop("_fb", None)
-    if fb is None:
-        return
-    fb_type, fb_msg = fb
-    icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
-    icon = icon_map.get(fb_type, "✅")
-    cls = fb_type if fb_type in ("success", "info", "warning", "error") else "success"
-    st.markdown(
-        f"<div class='feedback-banner {cls}'>"
-        f"<span>{icon}</span><span>{fb_msg}</span>"
-        f"</div>",
-        unsafe_allow_html=True,
-    )
-
-
 def render_upload() -> None:
-    _render_feedback()
-
     # ── Hero Section ──
     subtitle = (
         "CleanSheet AI Pro — Premium Version. Unlimited cleaning and exports."
@@ -164,13 +146,10 @@ def render_upload() -> None:
         uploaded.seek(0)
         df = load_csv(uploaded, uploaded.name)
 
-    st.success(
-        f"Loaded **{len(df):,} rows × {len(df.columns):,} columns** from "
-        f"`{uploaded.name}`"
-    )
-
     st.session_state.df = df
     st.session_state.df_original = df.copy()
     st.session_state.filename = uploaded.name
+    st.session_state["_fb_msg"] = f"Loaded {len(df):,} rows × {len(df.columns):,} columns"
+    st.session_state["_fb_icon"] = "✅"
     st.session_state.page = "overview"
     st.rerun()
