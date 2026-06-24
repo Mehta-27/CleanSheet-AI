@@ -264,7 +264,7 @@ COMPONENT_CSS = """
     }
     .stButton > button[kind="primary"]:hover {
         opacity: 0.95 !important;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+        box-shadow: 0 4px 12px rgba(167, 139, 250, 0.25) !important;
     }
     .stButton > button[kind="secondary"],
     .stButton > button[data-testid="stBaseButton-secondary"] {
@@ -309,7 +309,7 @@ COMPONENT_CSS = """
     .stMultiSelect > div > div:focus-within,
     .stTextInput > div > div > input:focus {
         border-color: var(--accent-purple) !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+        box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.1) !important;
     }
     .stCheckbox label span { color: var(--text-primary) !important; }
 
@@ -447,9 +447,9 @@ COMPONENT_CSS = """
         border-radius: var(--radius-sm);
         font-size: 0.7rem;
         font-weight: 600;
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(167, 139, 250, 0.1);
         color: var(--accent-purple);
-        border: 1px solid rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(167, 139, 250, 0.15);
     }
 
     /* ── Pro CTA ── */
