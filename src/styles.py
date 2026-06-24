@@ -78,24 +78,33 @@ ANIMATIONS = """
 
 # ── Component Styles ──────────────────────────────────────────────────────
 COMPONENT_CSS = """
-    /* ── Box-sizing & overflow safety (prevents ALL layout breaking) ── */
-    *, *::before, *::after {
-        box-sizing: border-box !important;
-        max-width: 100% !important;
-    }
-    html, body, .stApp, #root {
+    /* ── Overflow safety ── */
+    html, body, .stApp, #root, .main {
         overflow-x: hidden !important;
-        width: 100% !important;
         max-width: 100vw !important;
     }
 
-    /* ── Typography (emoji-safe — covers everything) ── */
+    /* ── Box-sizing ── */
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+
+    /* ── Typography (emoji-safe — covers elements AND pseudo-elements) ── */
     * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+    }
+    *::before, *::after {
+        font-family: inherit !important;
     }
     .material-symbols-rounded,
     .material-symbols-outlined {
         font-family: 'Material Symbols Rounded', sans-serif !important;
+    }
+    .material-symbols-rounded::before,
+    .material-symbols-rounded::after,
+    .material-symbols-outlined::before,
+    .material-symbols-outlined::after {
+        font-family: 'Material Symbols Rounded' !important;
     }
 
     .stApp {
