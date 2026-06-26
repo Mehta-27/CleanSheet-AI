@@ -92,6 +92,7 @@ COMPONENT_CSS = """
     /* ── Typography (emoji-safe — covers elements AND pseudo-elements) ── */
     * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+        overflow-wrap: break-word !important;
     }
     *::before, *::after {
         font-family: inherit !important;
@@ -224,7 +225,13 @@ COMPONENT_CSS = """
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
     }
-    [data-testid="stMetric"] [data-testid="stMetricDelta"] { font-weight: 600 !important; }
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] {
+        font-weight: 600 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        max-width: 100% !important;
+    }
 
     /* ── File Uploader — big centered drop zone ── */
     [data-testid="stFileUploader"] {
@@ -292,7 +299,7 @@ COMPONENT_CSS = """
         overflow: hidden !important;
     }
     [data-testid="stExpander"]:hover { border-color: var(--border-medium) !important; }
-    [data-testid="stExpander"] summary { color: var(--text-primary) !important; font-weight: 600 !important; }
+    [data-testid="stExpander"] summary { color: var(--text-primary) !important; font-weight: 600 !important; overflow-wrap: break-word !important; word-break: break-word !important; }
 
     /* ── Buttons ── */
     .stButton > button { width: 100% !important; }
@@ -413,6 +420,8 @@ COMPONENT_CSS = """
         margin-bottom: 1rem;
         padding-bottom: 0.4rem;
         border-bottom: 2px solid var(--accent-purple);
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .feature-pill {
@@ -522,7 +531,7 @@ COMPONENT_CSS = """
         color: var(--text-secondary) !important;
         word-break: break-word !important;
     }
-    .pro-cta-card li::before { content: '→ ' !important; color: var(--accent-amber) !important; }
+    .pro-cta-card li::before { content: '→' !important; color: var(--accent-amber) !important; margin-right: 0.4em !important; }
     .pro-cta-btn {
         display: block !important;
         background: var(--gradient-pro) !important;
@@ -565,11 +574,14 @@ COMPONENT_CSS = """
         .hero-title { font-size: 1.35rem !important; }
         .hero-subtitle { font-size: 0.85rem !important; max-width: 100% !important; }
         [data-testid="stMetric"] { padding: 0.35rem 0.4rem !important; }
+        [data-testid="stMetric"] [data-testid="stMetricValue"] { font-size: 0.9rem !important; }
         .feature-card { padding: 0.7rem !important; }
         .feature-card h4 { font-size: 0.78rem !important; }
         .feature-card p { font-size: 0.7rem !important; }
         .main .block-container { padding: 1rem 0.8rem !important; }
         div[data-testid="stMetricRow"] { gap: 0.2rem !important; }
+        .section-header { font-size: 1.1rem !important; }
+        [data-testid="stExpander"] summary { font-size: 0.88rem !important; }
     }
 
     /* ── Version Badge ── */

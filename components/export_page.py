@@ -28,7 +28,8 @@ def render_export() -> None:
     st.markdown(
         "<p style='color:var(--text-tertiary); font-size:0.82rem; "
         "font-weight:500; text-transform:uppercase; letter-spacing:0.06em; "
-        "margin-bottom:0.75rem;'>Before → After</p>",
+        "margin-bottom:0.75rem; word-break:break-word; overflow-wrap:break-word;'>"
+        "Before → After</p>",
         unsafe_allow_html=True,
     )
 

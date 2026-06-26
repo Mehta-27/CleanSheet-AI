@@ -86,8 +86,8 @@ def render_overview() -> None:
                     st.markdown(f"**{col}**")
                     st.markdown(
                         f"<span style='color:var(--text-secondary); font-size:0.82rem;'>"
-                        f"Min: {stats['min']:.2f} &nbsp;·&nbsp; "
-                        f"Max: {stats['max']:.2f} &nbsp;·&nbsp; "
+                        f"Min: {stats['min']:.2f} &middot; "
+                        f"Max: {stats['max']:.2f} &middot; "
                         f"Mean: {stats['mean']:.2f}</span>",
                         unsafe_allow_html=True,
                     )
