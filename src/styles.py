@@ -300,27 +300,11 @@ COMPONENT_CSS = """
     }
     [data-testid="stExpander"]:hover { border-color: var(--border-medium) !important; }
     [data-testid="stExpander"] summary {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
         padding: 0.5rem 0.75rem !important;
         color: var(--text-primary) !important;
         font-weight: 600 !important;
         cursor: pointer !important;
-        min-height: 2.5rem !important;
     }
-    [data-testid="stExpander"] summary::-webkit-details-marker { display: none !important; }
-    [data-testid="stExpander"] summary::marker { display: none !important; content: '' !important; }
-    /* Custom disclosure chevron (replaces native) */
-    [data-testid="stExpander"] summary::before {
-        content: '▶' !important;
-        font-size: 0.55rem !important;
-        transition: transform 0.2s ease !important;
-        color: var(--text-tertiary) !important;
-        flex-shrink: 0 !important;
-        line-height: 1 !important;
-    }
-    [data-testid="stExpander"][open] summary::before { transform: rotate(90deg) !important; }
 
     /* ── Buttons ── */
     .stButton > button { width: 100% !important; }
