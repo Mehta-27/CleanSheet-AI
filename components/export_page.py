@@ -86,10 +86,10 @@ def render_export() -> None:
     if not _is_pro():
         st.markdown(
             "<div style='margin-top:1rem;'>"
-            "<div class='pro-cta-card'>"
+            "<div class='pro-card'>"
             "<div style='display:flex; align-items:center; gap:0.4rem; margin-bottom:0.6rem;'>"
-            "<span class='pro-badge'>✦ PRO</span>"
-            "<span style='font-size:0.92rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='background:rgba(245,158,11,0.15);color:var(--accent-amber);font-size:0.7rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;'>✦ PRO</span>"
+            "<span style='font-size:0.92rem; font-weight:700; color:var(--text);'>"
             "Unlock More Export Options</span>"
             "</div>"
             "<div style='display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:0.8rem;'>"
@@ -106,7 +106,7 @@ def render_export() -> None:
             "<span style='color:var(--accent-amber);'>✦</span>"
             "<span style='font-size:0.82rem; color:var(--text-secondary);'>500 MB file limit</span></div>"
             "</div>"
-            "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-cta-btn' "
+            "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-btn' "
             "target='_blank'>Get Pro Now! →</a>"
             "</div></div>",
             unsafe_allow_html=True,

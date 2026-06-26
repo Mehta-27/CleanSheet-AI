@@ -85,7 +85,7 @@ def main() -> None:
             st.markdown(
                 "<div style='padding: 0.3rem 0;'>"
                 "<span style='font-size:1.15rem; font-weight:700; "
-                "color:var(--text-heading); letter-spacing:-0.02em;'>🧹 CleanSheet Pro</span>"
+                "color:var(--text); letter-spacing:-0.02em;'>🧹 CleanSheet Pro</span>"
                 "</div>",
                 unsafe_allow_html=True,
             )

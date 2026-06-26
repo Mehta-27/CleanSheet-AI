@@ -55,7 +55,7 @@ def main() -> None:
             st.markdown(
                 "<div style='padding: 0.3rem 0;'>"
                 "<span style='font-size:1.15rem; font-weight:700; "
-                "color:var(--text-heading); letter-spacing:-0.02em;'>🧹 CleanSheet AI</span>"
+                "color:var(--text); letter-spacing:-0.02em;'>🧹 CleanSheet AI</span>"
                 "</div>",
                 unsafe_allow_html=True,
             )
@@ -116,10 +116,10 @@ def main() -> None:
 
         # ── Pro CTA Card ──
         st.markdown(
-            "<div class='pro-cta-card'>"
+            "<div class='pro-card'>"
             "<div style='display:flex; align-items:center; gap:0.4rem; margin-bottom:0.5rem;'>"
-            "<span class='pro-badge'>✦ PRO</span>"
-            "<span style='font-size:0.9rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='background:rgba(245,158,11,0.15);color:var(--accent-amber);font-size:0.7rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;'>✦ PRO</span>"
+            "<span style='font-size:0.9rem; font-weight:700; color:var(--text);'>"
             "Upgrade to Pro</span>"
             "</div>"
             "<ul>"
@@ -129,7 +129,7 @@ def main() -> None:
             "<li>500 MB file limit</li>"
             "<li>Outlier detection & filtering</li>"
             "</ul>"
-            "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-cta-btn' "
+            "<a href='https://7388507084353.gumroad.com/l/tqqra' class='pro-btn' "
             "target='_blank'>Get Pro Now! →</a>"
             "</div>",
             unsafe_allow_html=True,
@@ -140,7 +140,7 @@ def main() -> None:
         # ── Support Card ──
         st.markdown(
             "<div class='support-card'>"
-            "<div style='font-size:0.9rem; font-weight:700; color:var(--text-heading); "
+            "<div style='font-size:0.9rem; font-weight:700; color:var(--text); "
             "margin-bottom:0.4rem;'>💜 Support CleanSheet</div>"
             "<p style='font-size:0.78rem; color:var(--text-tertiary); margin:0 0 0.6rem 0; "
             "line-height:1.4;'>"

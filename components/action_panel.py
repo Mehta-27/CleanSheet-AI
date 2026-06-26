@@ -22,11 +22,7 @@ def render_clean() -> None:
     fb_icon = st.session_state.pop("_fb_icon", "✅")
     if fb_msg:
         st.toast(fb_msg, icon=fb_icon)
-        st.markdown(
-            f"<div class='feedback-banner success'>"
-            f"<span>{fb_icon}</span><span>{fb_msg}</span></div>",
-            unsafe_allow_html=True,
-        )
+        st.success(f"{fb_icon} {fb_msg}")
 
     st.markdown(
         "<div class='section-header'>🧹 Clean Your Data</div>",
@@ -51,7 +47,7 @@ def render_clean() -> None:
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
             "<span style='font-size:1.2rem;'>🔁</span>"
-            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text);'>"
             "Remove Duplicates</span></div>",
             unsafe_allow_html=True,
         )
@@ -78,7 +74,7 @@ def render_clean() -> None:
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
             "<span style='font-size:1.2rem;'>❓</span>"
-            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text);'>"
             "Handle Missing Values</span></div>",
             unsafe_allow_html=True,
         )
@@ -131,7 +127,7 @@ def render_clean() -> None:
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
             "<span style='font-size:1.2rem;'>✏️</span>"
-            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text);'>"
             "Standardize Text</span></div>",
             unsafe_allow_html=True,
         )
@@ -178,7 +174,7 @@ def render_clean() -> None:
         st.markdown(
             "<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;'>"
             "<span style='font-size:1.2rem;'>🔄</span>"
-            "<span style='font-size:0.95rem; font-weight:700; color:var(--text-heading);'>"
+            "<span style='font-size:0.95rem; font-weight:700; color:var(--text);'>"
             "Convert Data Types</span></div>",
             unsafe_allow_html=True,
         )

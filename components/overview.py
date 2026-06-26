@@ -109,8 +109,8 @@ def render_overview() -> None:
             for col, vals in profile.outlier_candidates.items():
                 st.markdown(
                     f"<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;'>"
-                    f"<span class='severity-warning'>Warning</span>"
-                    f"<span style='color:var(--text-primary); font-size:0.88rem;'>"
+                    f"<span style='background:rgba(245,158,11,0.15);color:var(--warning);font-size:0.72rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:999px;'>Warning</span>"
+                    f"<span style='color:var(--text); font-size:0.88rem;'>"
                     f"<strong>{col}</strong>: {len(vals)} potential outliers detected "
                     f"(e.g., {', '.join(str(v) for v in vals[:5])})</span></div>",
                     unsafe_allow_html=True,

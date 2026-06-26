@@ -21,8 +21,8 @@ def render_upload() -> None:
     )
     st.markdown(
         f"<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
-        f"<div class='hero-title'>Your Data, Perfectly Clean</div>"
-        f"<p class='hero-subtitle' style='margin:0 auto;'>{subtitle}</p>"
+        f"<h1 style='font-size:2rem; font-weight:700; margin-bottom:0.5rem;'>Your Data, Perfectly Clean</h1>"
+        f"<p style='color:var(--text-secondary); max-width:480px; margin:0 auto; font-size:0.95rem;'>{subtitle}</p>"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -48,35 +48,17 @@ def render_upload() -> None:
 
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.markdown(
-                "<div class='feature-card'>"
-                "<span class='icon'>📤</span>"
-                "<h4>1. Upload</h4>"
-                "<p>Drop your messy CSV or TSV file. Up to 5 MB free — "
-                "auto-detects delimiters and encoding.</p>"
-                "</div>",
-                unsafe_allow_html=True,
-            )
+            with st.container(border=True):
+                st.markdown("**📤 1. Upload**")
+                st.caption("Drop your messy CSV or TSV file. Up to 5 MB free — auto-detects delimiters and encoding.")
         with col2:
-            st.markdown(
-                "<div class='feature-card'>"
-                "<span class='icon'>🔍</span>"
-                "<h4>2. Detect Issues</h4>"
-                "<p>Auto-profiling finds missing values, duplicates, "
-                "outliers, and type mismatches instantly.</p>"
-                "</div>",
-                unsafe_allow_html=True,
-            )
+            with st.container(border=True):
+                st.markdown("**🔍 2. Detect Issues**")
+                st.caption("Auto-profiling finds missing values, duplicates, outliers, and type mismatches instantly.")
         with col3:
-            st.markdown(
-                "<div class='feature-card'>"
-                "<span class='icon'>✨</span>"
-                "<h4>3. Clean & Export</h4>"
-                "<p>Fix issues with one click — fill missing values, "
-                "remove duplicates, and download clean data.</p>"
-                "</div>",
-                unsafe_allow_html=True,
-            )
+            with st.container(border=True):
+                st.markdown("**✨ 3. Clean & Export**")
+                st.caption("Fix issues with one click — fill missing values, remove duplicates, and download clean data.")
 
         # ── What's included ──
         st.markdown("<br>", unsafe_allow_html=True)
@@ -101,7 +83,7 @@ def render_upload() -> None:
         ]
         pills_html = "<div style='display:flex; flex-wrap:wrap; justify-content:center; gap:0.3rem; margin-bottom:1rem;'>"
         for feat in free_features:
-            pills_html += f"<span class='feature-pill'>✓ {feat}</span>"
+            pills_html += f"<span style='background:var(--bg-card);border:1px solid var(--border);border-radius:999px;padding:0.15rem 0.6rem;font-size:0.78rem;color:var(--text-secondary);white-space:nowrap;'>✓ {feat}</span>"
         pills_html += "</div>"
         st.markdown(pills_html, unsafe_allow_html=True)
 
@@ -116,11 +98,10 @@ def render_upload() -> None:
             ]
             pro_pills = "<div style='display:flex; flex-wrap:wrap; justify-content:center; gap:0.3rem; margin-bottom:1rem;'>"
             for feat in pro_features:
-                pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span>"
+                pro_pills += f"<span style='background:var(--bg-card);border:1px solid var(--border);border-radius:999px;padding:0.15rem 0.6rem;font-size:0.78rem;color:var(--text-tertiary);opacity:0.6;white-space:nowrap;'>{feat}</span>"
             pro_pills += (
                 "<a href='https://7388507084353.gumroad.com/l/tqqra' target='_blank' "
-                "class='feature-pill' style='border-color:var(--accent-amber); "
-                "color:var(--accent-amber); font-weight:600;'>Unlock Pro →</a>"
+                "style='background:var(--bg-card);border:1px solid var(--accent-amber);border-radius:999px;padding:0.15rem 0.6rem;font-size:0.78rem;color:var(--accent-amber);font-weight:600;white-space:nowrap;text-decoration:none;'>Unlock Pro →</a>"
             )
             pro_pills += "</div>"
             st.markdown(pro_pills, unsafe_allow_html=True)

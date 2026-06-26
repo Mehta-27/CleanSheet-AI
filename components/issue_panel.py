@@ -30,8 +30,8 @@ def render_issues() -> None:
             total_pct = profile.total_missing_cells / max(profile.total_cells, 1) * 100
             st.markdown(
                 f"<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;'>"
-                f"<span class='severity-critical'>Critical</span>"
-                f"<span style='color:var(--text-primary);'>"
+                f"<span style='background:rgba(239,68,68,0.15);color:var(--danger);font-size:0.72rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:999px;'>Critical</span>"
+                f"<span style='color:var(--text);'>"
                 f"<strong>{profile.total_missing_cells:,}</strong> missing values across "
                 f"<strong>{len(profile.missing_values)}</strong> columns "
                 f"({total_pct:.1f}% of all cells)</span></div>",
@@ -67,8 +67,8 @@ def render_issues() -> None:
             dup_pct = profile.duplicate_count / max(len(df), 1) * 100
             st.markdown(
                 f"<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;'>"
-                f"<span class='severity-warning'>Warning</span>"
-                f"<span style='color:var(--text-primary);'>"
+                f"<span style='background:rgba(245,158,11,0.15);color:var(--warning);font-size:0.72rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:999px;'>Warning</span>"
+                f"<span style='color:var(--text);'>"
                 f"Found <strong>{profile.duplicate_count:,}</strong> duplicate "
                 f"row{'s' if profile.duplicate_count > 1 else ''} "
                 f"({dup_pct:.1f}% of data)</span></div>",
@@ -88,15 +88,15 @@ def render_issues() -> None:
         with st.expander("📌 Constant Columns"):
             st.markdown(
                 f"<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;'>"
-                f"<span class='severity-info'>Info</span>"
-                f"<span style='color:var(--text-primary);'>"
+                f"<span style='background:rgba(99,102,241,0.15);color:var(--accent);font-size:0.72rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:999px;'>Info</span>"
+                f"<span style='color:var(--text);'>"
                 f"These columns have only one unique value and may be redundant:</span></div>",
                 unsafe_allow_html=True,
             )
             for col in profile.constant_columns:
                 st.markdown(
                     f"<div style='padding:0.3rem 0; color:var(--text-secondary);'>"
-                    f"• <strong style='color:var(--text-primary);'>{col}</strong></div>",
+                    f"• <strong style='color:var(--text);'>{col}</strong></div>",
                     unsafe_allow_html=True,
                 )
 
@@ -106,8 +106,8 @@ def render_issues() -> None:
         with st.expander("📊 Potential Outliers"):
             st.markdown(
                 f"<div style='display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;'>"
-                f"<span class='severity-warning'>Warning</span>"
-                f"<span style='color:var(--text-primary);'>"
+                f"<span style='background:rgba(245,158,11,0.15);color:var(--warning);font-size:0.72rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:999px;'>Warning</span>"
+                f"<span style='color:var(--text);'>"
                 f"Columns with values far outside the normal range "
                 f"(based on IQR method):</span></div>",
                 unsafe_allow_html=True,
@@ -115,7 +115,7 @@ def render_issues() -> None:
             for col, vals in profile.outlier_candidates.items():
                 st.markdown(
                     f"<div style='padding:0.3rem 0; color:var(--text-secondary);'>"
-                    f"• <strong style='color:var(--text-primary);'>{col}</strong>: "
+                    f"• <strong style='color:var(--text);'>{col}</strong>: "
                     f"{len(vals)} outlier{'s' if len(vals) > 1 else ''} detected</div>",
                     unsafe_allow_html=True,
                 )
