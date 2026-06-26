@@ -218,8 +218,11 @@ COMPONENT_CSS = """
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         color: var(--text-heading) !important;
         font-weight: 700 !important;
-        font-size: 1.15rem !important;
+        font-size: 1.05rem !important;
         line-height: 1.2 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricDelta"] { font-weight: 600 !important; }
 
@@ -415,15 +418,18 @@ COMPONENT_CSS = """
     .feature-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.3rem 0.7rem;
+        gap: 0.25rem;
+        padding: 0.25rem 0.55rem;
         border-radius: var(--radius-sm);
-        font-size: 0.78rem;
+        font-size: 0.75rem;
         font-weight: 500;
         border: 1px solid var(--border-subtle);
         background: var(--bg-card);
         color: var(--text-secondary);
         margin: 0.15rem;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .pro-badge {
@@ -514,6 +520,7 @@ COMPONENT_CSS = """
         padding: 0.15rem 0 !important;
         font-size: 0.78rem !important;
         color: var(--text-secondary) !important;
+        word-break: break-word !important;
     }
     .pro-cta-card li::before { content: '→ ' !important; color: var(--accent-amber) !important; }
     .pro-cta-btn {
@@ -553,6 +560,18 @@ COMPONENT_CSS = """
         transform: translateY(-1px) !important;
     }
 
+    /* ── Responsive: narrow viewports ── */
+    @media (max-width: 640px) {
+        .hero-title { font-size: 1.35rem !important; }
+        .hero-subtitle { font-size: 0.85rem !important; max-width: 100% !important; }
+        [data-testid="stMetric"] { padding: 0.35rem 0.4rem !important; }
+        .feature-card { padding: 0.7rem !important; }
+        .feature-card h4 { font-size: 0.78rem !important; }
+        .feature-card p { font-size: 0.7rem !important; }
+        .main .block-container { padding: 1rem 0.8rem !important; }
+        div[data-testid="stMetricRow"] { gap: 0.2rem !important; }
+    }
+
     /* ── Version Badge ── */
     .version-badge {
         display: inline-block;
@@ -582,7 +601,7 @@ COMPONENT_CSS = """
     }
     .feature-card .icon { font-size: 1.3rem; margin-bottom: 0.3rem; display: block; }
     .feature-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-heading); }
-    .feature-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin: 0; }
+    .feature-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin: 0; overflow-wrap: break-word; word-break: break-word; }
 
     /* ── Feedback / success banner (inline, survives reruns) ── */
     .feedback-banner {
@@ -607,7 +626,7 @@ COMPONENT_CSS = """
 
     /* ── Onboarding / Hero Section ── */
     .hero-title {
-        font-size: 2rem !important;
+        font-size: clamp(1.35rem, 5vw, 2rem) !important;
         font-weight: 800 !important;
         color: var(--text-heading) !important;
         letter-spacing: -0.03em !important;

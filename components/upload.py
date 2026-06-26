@@ -99,9 +99,9 @@ def render_upload() -> None:
             "CSV download",
             "Cleaning history",
         ]
-        pills_html = "<div style='text-align:center; margin-bottom:1rem;'>"
+        pills_html = "<div style='display:flex; flex-wrap:wrap; justify-content:center; gap:0.3rem; margin-bottom:1rem;'>"
         for feat in free_features:
-            pills_html += f"<span class='feature-pill'>✓ {feat}</span> "
+            pills_html += f"<span class='feature-pill'>✓ {feat}</span>"
         pills_html += "</div>"
         st.markdown(pills_html, unsafe_allow_html=True)
 
@@ -114,9 +114,9 @@ def render_upload() -> None:
                 "🔒 500 MB file limit",
                 "🔒 Batch processing",
             ]
-            pro_pills = "<div style='text-align:center; margin-bottom:1rem;'>"
+            pro_pills = "<div style='display:flex; flex-wrap:wrap; justify-content:center; gap:0.3rem; margin-bottom:1rem;'>"
             for feat in pro_features:
-                pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span> "
+                pro_pills += f"<span class='feature-pill' style='opacity:0.6;'>{feat}</span>"
             pro_pills += (
                 "<a href='https://7388507084353.gumroad.com/l/tqqra' target='_blank' "
                 "class='feature-pill' style='border-color:var(--accent-amber); "

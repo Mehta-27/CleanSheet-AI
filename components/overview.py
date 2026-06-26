@@ -45,7 +45,7 @@ def render_overview() -> None:
     with col8:
         n_numeric = len(profile.numeric_stats)
         n_text = len(df.select_dtypes(include="object").columns)
-        st.metric("Types", f"{n_numeric} num · {n_text} text")
+        st.metric("Types", f"{n_numeric}N · {n_text}T")
 
     # ── Cleaning History ──
     if st.session_state.get("cleaning_log"):
