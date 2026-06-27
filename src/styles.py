@@ -211,40 +211,64 @@ COMPONENT_CSS = """
         border: 2px dashed var(--border) !important;
         border-radius: var(--radius) !important;
         background: var(--bg-card) !important;
-        padding: 2rem !important;
+        padding: 2rem 2rem 1.5rem !important;
         text-align: center !important;
+        transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0) !important;
     }
-    [data-testid="stFileUploader"]:hover { border-color: var(--accent) !important; }
+    [data-testid="stFileUploader"]:hover {
+        border-color: var(--accent) !important;
+        background: rgba(99, 102, 241, 0.03) !important;
+        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.08) !important;
+    }
     [data-testid="stFileUploader"] > label { display: none !important; }
 
-    /* Fix the "uploadUpload" overlap: Streamlit's file uploader button renders
-       a Material Symbols icon span with dynamically-generated Emotion class
-       names. We target structurally — hide the FIRST child of ANY type inside
-       the button (the icon), and offset the label text via flex order. */
+    /* Upload icon (decorative) */
+    [data-testid="stFileUploader"]::before {
+        content: "☁️";
+        display: block;
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.6;
+        filter: grayscale(0.2);
+    }
+
+    /* Style the browse button inside the uploader */
     [data-testid="stFileUploader"] button {
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 0.35rem !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        position: relative !important;
+        background: linear-gradient(135deg, var(--accent) 0%, #4F46E5 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: var(--radius-sm) !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1.5rem !important;
+        font-size: 0.88rem !important;
+        cursor: pointer !important;
+        transition: box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease !important;
+        min-width: 140px !important;
+        min-height: 38px !important;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
+        letter-spacing: 0.01em !important;
     }
-    /* Nuclear: hide the icon (first child of any tag type) */
-    [data-testid="stFileUploader"] button > *:first-child {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        font-size: 0 !important;
-        overflow: hidden !important;
-        position: absolute !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
+    /* Ensure ALL child elements inside the button are white */
+    [data-testid="stFileUploader"] button p,
+    [data-testid="stFileUploader"] button span:not([style*="display: none"]),
+    [data-testid="stFileUploader"] button div {
+        color: white !important;
     }
-    /* Re-apply Material font to any deeply nested spans that survive */
-    [data-testid="stFileUploader"] button [class*="Icon"],
-    [data-testid="stFileUploader"] button [class*="icon"],
-    [data-testid="stFileUploader"] button [class*="material"] {
-        display: none !important;
+    [data-testid="stFileUploader"] button:hover {
+        opacity: 0.92 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+    }
+    [data-testid="stFileUploader"] button:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 1px 4px rgba(99, 102, 241, 0.2) !important;
+    }
+    /* File size / type info text */
+    [data-testid="stFileUploader"] small,
+    [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzoneInstructions"] {
+        color: var(--text-tertiary) !important;
+        font-size: 0.78rem !important;
     }
 
     /* ── Inputs ── */
@@ -417,13 +441,6 @@ COMPONENT_CSS = """
         font-family: 'Material Symbols Rounded', 'Material Icons' !important;
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
     }
-    /* Hard hide: file-uploader icon is unreachable by font-family alone
-       (the span has no identifying class). This structural rule hides the
-       first child of any type — guaranteed to catch the icon. */
-    [data-testid="stFileUploader"] button > *:first-child {
-        display: none !important;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 640px) {
         .main .block-container { padding: 1rem 0.75rem !important; }
@@ -440,37 +457,37 @@ def _build_css(dark: bool) -> str:
 
 
 # JavaScript that hides Material Symbols icon-text rendered as literal text.
-# Streamlit uses emotion-generated class names that change across builds,
-# so CSS `:not()` selectors can't reliably target them. This observer
-# watches the DOM and hides any <span> whose text matches a known icon name.
+# Only targets specific containers (file uploader, header) and only matches
+# all-lowercase icon names (e.g. "upload") — won't match labels like "Upload".
 ICON_FIX_JS = """
 <script>
 (function() {
-    const ICON_NAMES = new Set([
-        'upload', 'upload_file', 'arrow_right', 'arrow_left', 'arrow_forward',
-        'arrow_back', 'download', 'close', 'search', 'check', 'check_circle',
-        'delete', 'edit', 'add', 'remove', 'expand_more', 'expand_less',
-        'chevron_right', 'chevron_left', 'menu', 'more_vert', 'more_horiz',
-        'settings', 'info', 'warning', 'error', 'visibility', 'visibility_off',
-        'file_upload', 'cloud_upload', 'description', 'folder', 'save',
-        'content_copy', 'refresh', 'play_arrow', 'pause', 'stop', 'skip_next',
-        'skip_previous', 'file_download', 'cloud_download'
-    ]);
+    var ICON_RE = /^[a-z][a-z_]+$/;
 
-    function hideIconText() {
-        document.querySelectorAll('span').forEach(function(el) {
-            var txt = el.textContent.trim();
-            if (ICON_NAMES.has(txt) && el.children.length === 0) {
-                el.style.display = 'none';
-            }
+    function fixIcons() {
+        // Only target buttons inside file uploader and header
+        var selectors = [
+            '[data-testid="stFileUploader"] button',
+            '[data-testid="stHeader"] button'
+        ];
+        selectors.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(btn) {
+                var spans = btn.querySelectorAll('span');
+                spans.forEach(function(span) {
+                    if (span.children.length > 0) return;
+                    var txt = span.textContent.trim();
+                    // Only hide if text is all-lowercase with underscores (icon name pattern)
+                    // This preserves labels like "Upload", "Browse files", etc.
+                    if (txt.length > 0 && txt.length < 30 && ICON_RE.test(txt)) {
+                        span.style.display = 'none';
+                    }
+                });
+            });
         });
     }
 
-    // Run immediately
-    hideIconText();
-
-    // Re-run whenever Streamlit re-renders the DOM
-    var obs = new MutationObserver(function() { hideIconText(); });
+    fixIcons();
+    var obs = new MutationObserver(function() { fixIcons(); });
     obs.observe(document.body, { childList: true, subtree: true });
 })();
 </script>
