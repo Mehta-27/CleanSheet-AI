@@ -6,7 +6,10 @@ Professional dark/light theme. Streamlit-native. Minimal overrides.
 import streamlit as st
 
 # ── Font ────────────────────────────────────────────────────────────────────
-FONTS = "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');"
+FONTS = (
+    "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');"
+    "@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');"
+)
 
 # ── Design Tokens ───────────────────────────────────────────────────────────
 DARK_TOKENS = """
@@ -55,7 +58,33 @@ LIGHT_TOKENS = """
 COMPONENT_CSS = """
     /* ── Base ── */
     html, body, .stApp, #root { overflow-x: hidden; }
-    * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important; }
+
+    /* Apply Inter to all elements EXCEPT Material Symbols icon spans.
+       Streamlit uses .material-symbols-rounded for icon glyphs; overriding
+       their font-family turns icon names like "upload" into visible text. */
+    html, body, .stApp,
+    h1, h2, h3, h4, h5, h6,
+    p, span, a, li, td, th, label, input, select, textarea, button, div,
+    code, pre, blockquote, .stMarkdown, .stButton, .stSelectbox,
+    .stMultiSelect, .stTextInput, .stDownloadButton {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+
+    /* ── Restore Material Symbols icon font globally ──
+       This is the critical fix: Streamlit renders icon names ("upload",
+       "arrow_right", "close", etc.) inside spans that need the icon font.
+       Without this rule, the wildcard font override turns them into plain text. */
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    span[data-testid="stIconMaterial"],
+    [class*="material-symbols"],
+    [class*="e1nzilvr"] {
+        font-family: 'Material Symbols Rounded', 'Material Icons' !important;
+        font-size: 1.2rem !important;
+        vertical-align: middle !important;
+        line-height: 1 !important;
+    }
+
     .stApp { background: var(--bg-primary); color: var(--text); }
 
     h1, h2, h3, h4, h5, h6 { color: var(--text) !important; font-weight: 600 !important; }
@@ -76,7 +105,22 @@ COMPONENT_CSS = """
     section[data-testid="stSidebar"] hr { margin: 0.75rem 0 !important; }
 
     /* ── Buttons ── */
-    .stButton > button { width: 100%; }
+    .stButton > button {
+        width: 100%;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    /* Ensure icon spans inside ALL buttons don't cause overlap */
+    .stButton > button span[data-testid="stIconMaterial"],
+    .stButton > button .material-symbols-rounded,
+    .stDownloadButton > button span[data-testid="stIconMaterial"],
+    .stDownloadButton > button .material-symbols-rounded {
+        font-family: 'Material Symbols Rounded' !important;
+        font-size: 1.1rem !important;
+        vertical-align: middle !important;
+        flex-shrink: 0 !important;
+    }
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="stBaseButton-primary"] {
         background: var(--accent) !important;
@@ -104,6 +148,9 @@ COMPONENT_CSS = """
         border-radius: var(--radius-sm) !important;
         font-weight: 600 !important;
         padding: 0.4rem 1rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     /* ── Cards (native Streamlit containers with border) ── */
@@ -112,6 +159,7 @@ COMPONENT_CSS = """
         border: 1px solid var(--border) !important;
         border-radius: var(--radius) !important;
         padding: 1rem !important;
+        overflow: hidden !important;
     }
 
     /* ── Metrics ── */
@@ -120,16 +168,23 @@ COMPONENT_CSS = """
         border: 1px solid var(--border) !important;
         border-radius: var(--radius) !important;
         padding: 0.75rem 1rem !important;
+        overflow: hidden !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricLabel"] {
         color: var(--text-secondary) !important;
         font-weight: 500 !important;
         font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         color: var(--text) !important;
         font-weight: 700 !important;
         font-size: 1.25rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricDelta"] {
         font-weight: 600 !important;
@@ -141,6 +196,12 @@ COMPONENT_CSS = """
         border-radius: var(--radius) !important;
         background: var(--bg-card) !important;
         margin-bottom: 0.5rem !important;
+    }
+    /* Fix expander header icon overlap */
+    [data-testid="stExpander"] summary span[data-testid="stIconMaterial"],
+    [data-testid="stExpander"] summary .material-symbols-rounded {
+        font-family: 'Material Symbols Rounded' !important;
+        flex-shrink: 0 !important;
     }
 
     /* ── File Uploader ── */
@@ -155,6 +216,36 @@ COMPONENT_CSS = """
     }
     [data-testid="stFileUploader"]:hover { border-color: var(--accent) !important; }
     [data-testid="stFileUploader"] > label { display: none !important; }
+
+    /* Fix the "uploadUpload" overlap: Streamlit's file uploader button renders
+       a Material Symbols icon span with dynamically-generated Emotion class
+       names. We target structurally — hide the FIRST child of ANY type inside
+       the button (the icon), and offset the label text via flex order. */
+    [data-testid="stFileUploader"] button {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    /* Nuclear: hide the icon (first child of any tag type) */
+    [data-testid="stFileUploader"] button > *:first-child {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        font-size: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    /* Re-apply Material font to any deeply nested spans that survive */
+    [data-testid="stFileUploader"] button [class*="Icon"],
+    [data-testid="stFileUploader"] button [class*="icon"],
+    [data-testid="stFileUploader"] button [class*="material"] {
+        display: none !important;
+    }
 
     /* ── Inputs ── */
     .stSelectbox > div > div,
@@ -218,12 +309,16 @@ COMPONENT_CSS = """
         padding: 0.85rem !important;
         margin: 0.5rem 0 !important;
         border-left: 3px solid var(--accent-amber) !important;
+        overflow: hidden !important;
     }
     .pro-card ul { list-style: none; padding: 0; margin: 0.4rem 0; }
     .pro-card li {
         padding: 0.15rem 0;
         font-size: 0.78rem;
         color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .pro-card li::before { content: '✦ '; color: var(--accent-amber); }
     .pro-btn {
@@ -237,6 +332,9 @@ COMPONENT_CSS = """
         font-size: 0.82rem;
         text-decoration: none !important;
         transition: opacity 0.15s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .pro-btn:hover { opacity: 0.9; }
 
@@ -248,6 +346,12 @@ COMPONENT_CSS = """
         padding: 0.85rem !important;
         margin: 0.5rem 0 !important;
         border-left: 3px solid var(--accent) !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    .support-card code {
+        word-break: break-all !important;
+        overflow-wrap: break-word !important;
     }
 
     /* ── Version badge ── */
@@ -273,6 +377,7 @@ COMPONENT_CSS = """
         border: 1px solid var(--border);
         font-size: 0.85rem;
         color: var(--text);
+        overflow: hidden;
     }
     .cleaning-entry .step {
         display: flex;
@@ -294,6 +399,29 @@ COMPONENT_CSS = """
         font-weight: 700;
         color: var(--text);
         margin-bottom: 1.25rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* ── Global: prevent ALL Streamlit icon text from showing as literal text ──
+       Streamlit renders Material Symbols via dynamically-generated Emotion class
+       names (e.g. e1nzilvr5). Our Inter font-family override on all elements
+       breaks these because the icon names (like "upload") become visible text.
+       We restore the Material Symbols font on any element that looks like an icon. */
+    [data-testid$="Icon"],
+    [data-testid$="Icon"] span,
+    [data-testid$="Icon"] div,
+    [class*="material-symbol"],
+    [class*="material-icon"],
+    button span[class*="material"] {
+        font-family: 'Material Symbols Rounded', 'Material Icons' !important;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+    }
+    /* Hard hide: file-uploader icon is unreachable by font-family alone
+       (the span has no identifying class). This structural rule hides the
+       first child of any type — guaranteed to catch the icon. */
+    [data-testid="stFileUploader"] button > *:first-child {
+        display: none !important;
     }
 
     /* ── Responsive ── */
@@ -311,9 +439,48 @@ def _build_css(dark: bool) -> str:
     return f"<style>\n{FONTS}\n:root {{{tokens}}}\n{COMPONENT_CSS}\n</style>\n"
 
 
+# JavaScript that hides Material Symbols icon-text rendered as literal text.
+# Streamlit uses emotion-generated class names that change across builds,
+# so CSS `:not()` selectors can't reliably target them. This observer
+# watches the DOM and hides any <span> whose text matches a known icon name.
+ICON_FIX_JS = """
+<script>
+(function() {
+    const ICON_NAMES = new Set([
+        'upload', 'upload_file', 'arrow_right', 'arrow_left', 'arrow_forward',
+        'arrow_back', 'download', 'close', 'search', 'check', 'check_circle',
+        'delete', 'edit', 'add', 'remove', 'expand_more', 'expand_less',
+        'chevron_right', 'chevron_left', 'menu', 'more_vert', 'more_horiz',
+        'settings', 'info', 'warning', 'error', 'visibility', 'visibility_off',
+        'file_upload', 'cloud_upload', 'description', 'folder', 'save',
+        'content_copy', 'refresh', 'play_arrow', 'pause', 'stop', 'skip_next',
+        'skip_previous', 'file_download', 'cloud_download'
+    ]);
+
+    function hideIconText() {
+        document.querySelectorAll('span').forEach(function(el) {
+            var txt = el.textContent.trim();
+            if (ICON_NAMES.has(txt) && el.children.length === 0) {
+                el.style.display = 'none';
+            }
+        });
+    }
+
+    // Run immediately
+    hideIconText();
+
+    // Re-run whenever Streamlit re-renders the DOM
+    var obs = new MutationObserver(function() { hideIconText(); });
+    obs.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+"""
+
+
 def inject_css() -> None:
     dark = st.session_state.get("dark_mode", True)
     st.markdown(_build_css(dark), unsafe_allow_html=True)
+    st.markdown(ICON_FIX_JS, unsafe_allow_html=True)
 
 
 def get_plotly_theme() -> dict:
