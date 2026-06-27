@@ -27,6 +27,13 @@ def render_upload() -> None:
         unsafe_allow_html=True,
     )
 
+    # Decorative upload icon above the drop zone
+    st.markdown(
+        "<div style='text-align:center; font-size:2rem; opacity:0.5; "
+        "margin-bottom:-0.5rem; line-height:1; pointer-events:none;'>☁️</div>",
+        unsafe_allow_html=True,
+    )
+
     limit = _file_limit()
 
     uploaded = st.file_uploader(

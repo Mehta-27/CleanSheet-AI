@@ -204,65 +204,43 @@ COMPONENT_CSS = """
         flex-shrink: 0 !important;
     }
 
-    /* ── File Uploader ── */
+    /* ── File Uploader (drop zone) ── */
     [data-testid="stFileUploader"] {
         max-width: 480px !important;
         margin: 0 auto !important;
         border: 2px dashed var(--border) !important;
         border-radius: var(--radius) !important;
         background: var(--bg-card) !important;
-        padding: 2rem 2rem 1.5rem !important;
+        padding: 2.5rem 2rem !important;
         text-align: center !important;
-        transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
-        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0) !important;
+        transition: border-color 0.25s ease, background 0.25s ease !important;
     }
     [data-testid="stFileUploader"]:hover {
         border-color: var(--accent) !important;
         background: rgba(99, 102, 241, 0.03) !important;
-        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.08) !important;
     }
     [data-testid="stFileUploader"] > label { display: none !important; }
 
-    /* Upload icon (decorative) */
-    [data-testid="stFileUploader"]::before {
-        content: "☁️";
-        display: block;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
-        opacity: 0.6;
-        filter: grayscale(0.2);
-    }
-
-    /* Style the browse button inside the uploader */
+    /* Browse files button inside the uploader */
     [data-testid="stFileUploader"] button {
-        background: linear-gradient(135deg, var(--accent) 0%, #4F46E5 100%) !important;
+        background: var(--accent) !important;
         color: white !important;
         border: none !important;
         border-radius: var(--radius-sm) !important;
         font-weight: 600 !important;
-        padding: 0.5rem 1.5rem !important;
-        font-size: 0.88rem !important;
+        padding: 0.45rem 1.25rem !important;
+        font-size: 0.85rem !important;
         cursor: pointer !important;
-        transition: box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease !important;
-        min-width: 140px !important;
-        min-height: 38px !important;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
-        letter-spacing: 0.01em !important;
+        transition: background 0.15s ease !important;
+        margin-top: 0 !important;
     }
-    /* Ensure ALL child elements inside the button are white */
     [data-testid="stFileUploader"] button p,
-    [data-testid="stFileUploader"] button span:not([style*="display: none"]),
+    [data-testid="stFileUploader"] button span,
     [data-testid="stFileUploader"] button div {
         color: white !important;
     }
     [data-testid="stFileUploader"] button:hover {
-        opacity: 0.92 !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
-    }
-    [data-testid="stFileUploader"] button:active {
-        transform: translateY(0) !important;
-        box-shadow: 0 1px 4px rgba(99, 102, 241, 0.2) !important;
+        background: var(--accent-hover) !important;
     }
     /* File size / type info text */
     [data-testid="stFileUploader"] small,
