@@ -54,10 +54,10 @@ def generate_pdf_report(
     pdf.set_font("Helvetica", "B", 13)
     pdf.cell(0, 10, f"Data Quality Score: {score.overall}/100", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(0, 6, f"Completeness: {score.completeness}/30", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, f"Uniqueness:     {score.uniqueness}/20", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, f"Consistency:    {score.consistency}/25", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, f"Validity:       {score.validity}/25", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Completeness: {score.completeness}/100 (weight 30%)", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Uniqueness:     {score.uniqueness}/100 (weight 20%)", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Consistency:    {score.consistency}/100 (weight 25%)", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Validity:       {score.validity}/100 (weight 25%)", new_x="LMARGIN", new_y="NEXT")
 
     pdf.ln(3)
 

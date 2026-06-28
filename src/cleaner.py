@@ -69,6 +69,7 @@ def standardize_text(
     for col in cols:
         if col not in df.columns:
             continue
+        mask = df[col].isna()
         s = df[col].fillna("").astype(str)
 
         if strip:
@@ -84,6 +85,8 @@ def standardize_text(
         if find_replace:
             s = s.str.replace(*find_replace, regex=False)
 
+        # Restore original NaN positions instead of leaving empty strings
+        s = s.where(~mask, other=None)
         df[col] = s
     return df
 

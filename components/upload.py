@@ -1,5 +1,5 @@
 import streamlit as st
-from src.utils import logger, MAX_FILE_SIZE_MB, MAX_FILE_SIZE_PRO_MB, SUPPORTED_EXTENSIONS
+from src.utils import logger, MAX_FILE_SIZE_MB, MAX_FILE_SIZE_PRO_MB, SUPPORTED_EXTENSIONS, SUPPORTED_EXTENSIONS_PRO
 from src.utils import format_bytes
 from src.loader import load_csv, validate_csv
 
@@ -116,8 +116,9 @@ def render_upload() -> None:
         return
 
     ext = uploaded.name.rsplit(".", 1)[-1].lower()
-    if f".{ext}" not in SUPPORTED_EXTENSIONS:
-        st.error(f"Unsupported format. Please upload CSV or TSV.")
+    allowed = SUPPORTED_EXTENSIONS_PRO if _is_pro() else SUPPORTED_EXTENSIONS
+    if f".{ext}" not in allowed:
+        st.error(f"Unsupported format (.{ext}). Please upload CSV, TSV" + (", or Excel." if _is_pro() else "."))
         return
 
     with st.spinner("Loading and validating..."):
