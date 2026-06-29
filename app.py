@@ -73,7 +73,7 @@ def main() -> None:
                 if i == current_idx:
                     dot = (
                         f"<div style='width:28px; height:6px; border-radius:999px; "
-                        f"background:var(--accent-purple); flex-shrink:0;'></div>"
+                        f"background:var(--accent); flex-shrink:0;'></div>"
                     )
                 elif i < current_idx:
                     dot = (
@@ -83,7 +83,7 @@ def main() -> None:
                 else:
                     dot = (
                         f"<div style='width:14px; height:6px; border-radius:999px; "
-                        f"background:var(--border-medium); flex-shrink:0;'></div>"
+                        f"background:var(--border); flex-shrink:0;'></div>"
                     )
                 steps_html += dot
             steps_html += "</div>"
@@ -101,14 +101,18 @@ def main() -> None:
             enabled = key == "upload" or has_data
 
             if not enabled:
-                st.button(label, use_container_width=True, disabled=True, key=f"nav_{key}")
+                st.button(
+                    label, use_container_width=True, disabled=True, key=f"nav_{key}"
+                )
                 continue
 
             is_active = current == key
             btn_label = f"**{i + 1}.** {label}" if has_data else label
             kind = "primary" if is_active else "secondary"
 
-            if st.button(btn_label, use_container_width=True, type=kind, key=f"nav_{key}"):
+            if st.button(
+                btn_label, use_container_width=True, type=kind, key=f"nav_{key}"
+            ):
                 st.session_state.page = key
                 st.rerun()
 
@@ -146,10 +150,10 @@ def main() -> None:
             "line-height:1.4;'>"
             "Love CleanSheet? Even a small contribution helps keep it free.</p>"
             "<div style='margin-top:0.6rem; padding:0.5rem; border-radius:var(--radius-sm); "
-            "background:var(--bg-glass); border:1px solid var(--border-subtle);'>"
+            "background:var(--bg-secondary); border:1px solid var(--border);'>"
             "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0 0 0.15rem 0; "
             "font-weight:500;'>🇮🇳 UPI (India)</p>"
-            "<code style='font-size:0.78rem; color:var(--accent-cyan);'>"
+            "<code style='font-size:0.78rem; color:var(--accent);'>"
             "mehtarishit108@oksbi</code>"
             "</div>"
             "<p style='font-size:0.72rem; color:var(--text-tertiary); margin:0.5rem 0 0 0; "
@@ -178,7 +182,9 @@ def main() -> None:
             next_key = PAGE_ORDER[next_idx]
             next_label, _ = PAGES[next_key]
             st.markdown("---")
-            if st.button(f"Next: {next_label} →", use_container_width=True, type="primary"):
+            if st.button(
+                f"Next: {next_label} →", use_container_width=True, type="primary"
+            ):
                 st.session_state.page = next_key
                 st.rerun()
 

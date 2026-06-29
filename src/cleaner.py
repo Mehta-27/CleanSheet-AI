@@ -62,9 +62,7 @@ def standardize_text(
     find_replace: tuple[str, str] | None = None,
 ) -> pd.DataFrame:
     df = df.copy()
-    cols = columns or [
-        c for c in df.columns if df[c].dtype == "object"
-    ]
+    cols = columns or [c for c in df.columns if df[c].dtype == "object"]
 
     for col in cols:
         if col not in df.columns:
@@ -76,9 +74,9 @@ def standardize_text(
             s = s.str.strip()
         if lowercase:
             s = s.str.lower()
-        elif uppercase:
+        if uppercase:
             s = s.str.upper()
-        elif title_case:
+        if title_case:
             s = s.str.title()
         if remove_special:
             s = s.apply(lambda x: re.sub(r"[^a-zA-Z0-9\s]", "", x))
@@ -91,9 +89,7 @@ def standardize_text(
     return df
 
 
-def convert_types(
-    df: pd.DataFrame, type_map: dict[str, str]
-) -> pd.DataFrame:
+def convert_types(df: pd.DataFrame, type_map: dict[str, str]) -> pd.DataFrame:
     df = df.copy()
     for col, dtype in type_map.items():
         if col not in df.columns:
@@ -108,9 +104,7 @@ def convert_types(
                     pd.Int64Dtype()
                 )
             elif dtype in ("float64", "float32"):
-                df[col] = pd.to_numeric(df[col], errors="coerce").astype(
-                    "float64"
-                )
+                df[col] = pd.to_numeric(df[col], errors="coerce").astype("float64")
             elif dtype == "string":
                 df[col] = df[col].astype("string")
             else:

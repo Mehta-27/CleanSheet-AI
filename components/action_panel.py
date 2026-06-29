@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 from src.cleaner import (
-    remove_duplicates, fill_missing, drop_missing,
-    standardize_text, convert_types, filter_outliers_iqr, rename_columns,
+    remove_duplicates,
+    fill_missing,
+    drop_missing,
+    standardize_text,
+    convert_types,
+    filter_outliers_iqr,
+    rename_columns,
 )
 from src.utils import CLEANING_METHODS, TEXT_OPERATIONS
 from src.exporter import to_csv_bytes
@@ -62,7 +67,9 @@ def render_clean() -> None:
             dup_removed = len(df) - len(new_df)
             if dup_removed > 0:
                 st.session_state.df = new_df
-                log.append(f"Removed {dup_removed:,} duplicate rows{' on selected columns' if dup_cols else ''}")
+                log.append(
+                    f"Removed {dup_removed:,} duplicate rows{' on selected columns' if dup_cols else ''}"
+                )
                 _fb(f"Removed {dup_removed:,} duplicate rows!")
                 st.rerun()
             else:
@@ -79,7 +86,8 @@ def render_clean() -> None:
             unsafe_allow_html=True,
         )
         strategy = st.selectbox(
-            "Strategy", options=list(CLEANING_METHODS.keys()),
+            "Strategy",
+            options=list(CLEANING_METHODS.keys()),
             format_func=lambda k: CLEANING_METHODS[k],
             key="miss_strategy",
         )
@@ -90,7 +98,11 @@ def render_clean() -> None:
         )
         fill_val = None
         if strategy == "value":
-            fill_val = st.text_input("Fill with value:", key="fill_val", placeholder="e.g. N/A, 0, Unknown...")
+            fill_val = st.text_input(
+                "Fill with value:",
+                key="fill_val",
+                placeholder="e.g. N/A, 0, Unknown...",
+            )
         miss_subset = miss_cols if miss_cols else None
 
         if st.button("Apply Missing Value Fix", type="primary", key="btn_miss"):
@@ -101,17 +113,29 @@ def render_clean() -> None:
                 log.append(f"Dropped {dropped:,} rows with missing values")
                 _fb(f"Dropped {dropped:,} rows!")
                 st.rerun()
-            elif strategy == "value" and fill_val:
-                new_df = fill_missing(df, strategy="value", columns=miss_subset, fill_value=fill_val)
+            elif strategy == "value":
+                if not fill_val:
+                    _fb("Enter a value to fill with.", "⚠️")
+                    st.rerun()
+                new_df = fill_missing(
+                    df, strategy="value", columns=miss_subset, fill_value=fill_val
+                )
                 st.session_state.df = new_df
                 log.append(f"Filled missing values with '{fill_val}'")
                 _fb(f"Filled with '{fill_val}'!")
                 st.rerun()
             else:
                 if strategy in ("mean", "median") and miss_subset:
-                    non_numeric = [c for c in miss_subset if not pd.api.types.is_numeric_dtype(df[c])]
+                    non_numeric = [
+                        c
+                        for c in miss_subset
+                        if not pd.api.types.is_numeric_dtype(df[c])
+                    ]
                     if non_numeric:
-                        _fb(f"Skipped non-numeric: {', '.join(non_numeric)}. Use 'mode' or 'value'.", "⚠️")
+                        _fb(
+                            f"Skipped non-numeric: {', '.join(non_numeric)}. Use 'mode' or 'value'.",
+                            "⚠️",
+                        )
                         filtered_cols = [c for c in miss_subset if c not in non_numeric]
                         if not filtered_cols:
                             st.rerun()
@@ -145,27 +169,43 @@ def render_clean() -> None:
             with t2:
                 do_title = st.checkbox("Convert to Title Case", key="t_title")
                 do_special = st.checkbox("Remove special characters", key="t_special")
-            find_text = st.text_input("Find (optional):", key="t_find", placeholder="Text to find...")
-            replace_text = st.text_input("Replace with:", key="t_replace", placeholder="Replacement text...")
+            find_text = st.text_input(
+                "Find (optional):", key="t_find", placeholder="Text to find..."
+            )
+            replace_text = st.text_input(
+                "Replace with:", key="t_replace", placeholder="Replacement text..."
+            )
             fr_pair = (find_text, replace_text) if find_text else None
 
             if st.button("Apply Text Standardization", type="primary", key="btn_text"):
                 new_df = standardize_text(
-                    df, columns=text_cols,
-                    strip=do_strip, lowercase=do_lower,
-                    uppercase=do_upper, title_case=do_title,
-                    remove_special=do_special, find_replace=fr_pair,
+                    df,
+                    columns=text_cols,
+                    strip=do_strip,
+                    lowercase=do_lower,
+                    uppercase=do_upper,
+                    title_case=do_title,
+                    remove_special=do_special,
+                    find_replace=fr_pair,
                 )
                 st.session_state.df = new_df
                 log_details = []
-                if do_strip: log_details.append("stripped")
-                if do_lower: log_details.append("lowercase")
-                if do_upper: log_details.append("UPPERCASE")
-                if do_title: log_details.append("Title Case")
-                if do_special: log_details.append("no special chars")
-                if fr_pair: log_details.append(f"replace '{find_text}'")
+                if do_strip:
+                    log_details.append("stripped")
+                if do_lower:
+                    log_details.append("lowercase")
+                if do_upper:
+                    log_details.append("UPPERCASE")
+                if do_title:
+                    log_details.append("Title Case")
+                if do_special:
+                    log_details.append("no special chars")
+                if fr_pair:
+                    log_details.append(f"replace '{find_text}'")
                 log_text = ", ".join(log_details) if log_details else "standardized"
-                log.append(f"Text standardized in {len(text_cols)} columns ({log_text})")
+                log.append(
+                    f"Text standardized in {len(text_cols)} columns ({log_text})"
+                )
                 _fb(f"Text standardized ({len(text_cols)} cols)!")
                 st.rerun()
 
@@ -190,7 +230,9 @@ def render_clean() -> None:
                 )
                 if chosen and chosen != "— keep as is —":
                     type_map[col] = chosen
-        if type_map and st.button("Apply Type Conversions", type="primary", key="btn_types"):
+        if type_map and st.button(
+            "Apply Type Conversions", type="primary", key="btn_types"
+        ):
             new_df = convert_types(df, type_map)
             st.session_state.df = new_df
             log.append(f"Converted types for {len(type_map)} columns")

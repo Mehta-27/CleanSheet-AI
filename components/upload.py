@@ -1,5 +1,11 @@
 import streamlit as st
-from src.utils import logger, MAX_FILE_SIZE_MB, MAX_FILE_SIZE_PRO_MB, SUPPORTED_EXTENSIONS, SUPPORTED_EXTENSIONS_PRO
+from src.utils import (
+    logger,
+    MAX_FILE_SIZE_MB,
+    MAX_FILE_SIZE_PRO_MB,
+    SUPPORTED_EXTENSIONS,
+    SUPPORTED_EXTENSIONS_PRO,
+)
 from src.utils import format_bytes
 from src.loader import load_csv, validate_csv
 
@@ -17,7 +23,7 @@ def render_upload() -> None:
     subtitle = (
         "CleanSheet AI Pro — Premium Version. Unlimited cleaning and exports."
         if _is_pro()
-        else "Upload a messy CSV. Get a clean dataset in under 60 seconds. <span style='color:var(--accent-green); font-weight:600;'>Free, no sign-up required.</span>"
+        else "Upload a messy CSV. Get a clean dataset in under 60 seconds. <span style='color:var(--success); font-weight:600;'>Free, no sign-up required.</span>"
     )
     st.markdown(
         f"<div style='text-align:center; padding:2rem 0 1.5rem 0;'>"
@@ -31,8 +37,11 @@ def render_upload() -> None:
 
     uploaded = st.file_uploader(
         "Upload your file",
-        type=["csv", "tsv", "txt", "xlsx", "xls"] if _is_pro() else ["csv", "tsv", "txt"],
-        help=f"Max file size: {limit} MB" + ("" if _is_pro() else " (upgrade to Pro for 500 MB)"),
+        type=["csv", "tsv", "txt", "xlsx", "xls"]
+        if _is_pro()
+        else ["csv", "tsv", "txt"],
+        help=f"Max file size: {limit} MB"
+        + ("" if _is_pro() else " (upgrade to Pro for 500 MB)"),
         label_visibility="collapsed",
     )
 
@@ -50,15 +59,21 @@ def render_upload() -> None:
         with col1:
             with st.container(border=True):
                 st.markdown("**📤 1. Upload**")
-                st.caption("Drop your messy CSV or TSV file. Up to 5 MB free — auto-detects delimiters and encoding.")
+                st.caption(
+                    "Drop your messy CSV or TSV file. Up to 5 MB free — auto-detects delimiters and encoding."
+                )
         with col2:
             with st.container(border=True):
                 st.markdown("**🔍 2. Detect Issues**")
-                st.caption("Auto-profiling finds missing values, duplicates, outliers, and type mismatches instantly.")
+                st.caption(
+                    "Auto-profiling finds missing values, duplicates, outliers, and type mismatches instantly."
+                )
         with col3:
             with st.container(border=True):
                 st.markdown("**✨ 3. Clean & Export**")
-                st.caption("Fix issues with one click — fill missing values, remove duplicates, and download clean data.")
+                st.caption(
+                    "Fix issues with one click — fill missing values, remove duplicates, and download clean data."
+                )
 
         # ── What's included ──
         st.markdown("<br>", unsafe_allow_html=True)
@@ -110,15 +125,17 @@ def render_upload() -> None:
     limit = _file_limit()
     if uploaded.size and uploaded.size > limit * 1024 * 1024:
         st.error(
-            f"File too large ({format_bytes(uploaded.size)}). "
-            f"Max limit is {limit} MB."
+            f"File too large ({format_bytes(uploaded.size)}). Max limit is {limit} MB."
         )
         return
 
     ext = uploaded.name.rsplit(".", 1)[-1].lower()
     allowed = SUPPORTED_EXTENSIONS_PRO if _is_pro() else SUPPORTED_EXTENSIONS
     if f".{ext}" not in allowed:
-        st.error(f"Unsupported format (.{ext}). Please upload CSV, TSV" + (", or Excel." if _is_pro() else "."))
+        st.error(
+            f"Unsupported format (.{ext}). Please upload CSV, TSV"
+            + (", or Excel." if _is_pro() else ".")
+        )
         return
 
     with st.spinner("Loading and validating..."):
@@ -132,7 +149,9 @@ def render_upload() -> None:
     st.session_state.df = df
     st.session_state.df_original = df.copy()
     st.session_state.filename = uploaded.name
-    st.session_state["_fb_msg"] = f"Loaded {len(df):,} rows × {len(df.columns):,} columns"
+    st.session_state["_fb_msg"] = (
+        f"Loaded {len(df):,} rows × {len(df.columns):,} columns"
+    )
     st.session_state["_fb_icon"] = "✅"
     st.session_state.page = "overview"
     st.rerun()

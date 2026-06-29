@@ -33,7 +33,11 @@ PAGES = {
 PAGE_ORDER = ["upload", "overview", "issues", "clean", "export"]
 
 STEP_ICONS = {
-    "upload": "📤", "overview": "📊", "issues": "🚩", "clean": "🧹", "export": "📥",
+    "upload": "📤",
+    "overview": "📊",
+    "issues": "🚩",
+    "clean": "🧹",
+    "export": "📥",
 }
 
 
@@ -100,11 +104,11 @@ def main() -> None:
             steps_html = "<div style='display:flex; align-items:center; gap:4px; margin:0.6rem 0 0.3rem 0;'>"
             for i, key in enumerate(PAGE_ORDER):
                 if i == current_idx:
-                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--accent-purple);flex-shrink:0;'></div>"
+                    dot = f"<div style='width:28px;height:6px;border-radius:999px;background:var(--accent);flex-shrink:0;'></div>"
                 elif i < current_idx:
                     dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--accent-green);opacity:0.7;flex-shrink:0;'></div>"
                 else:
-                    dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--border-medium);flex-shrink:0;'></div>"
+                    dot = f"<div style='width:14px;height:6px;border-radius:999px;background:var(--border);flex-shrink:0;'></div>"
                 steps_html += dot
             steps_html += "</div>"
             st.markdown(steps_html, unsafe_allow_html=True)
@@ -119,18 +123,22 @@ def main() -> None:
             label, _ = PAGES[key]
             enabled = key == "upload" or has_data
             if not enabled:
-                st.button(label, use_container_width=True, disabled=True, key=f"nav_{key}")
+                st.button(
+                    label, use_container_width=True, disabled=True, key=f"nav_{key}"
+                )
                 continue
             is_active = current == key
             btn_label = f"**{i + 1}.** {label}" if has_data else label
             kind = "primary" if is_active else "secondary"
-            if st.button(btn_label, use_container_width=True, type=kind, key=f"nav_{key}"):
+            if st.button(
+                btn_label, use_container_width=True, type=kind, key=f"nav_{key}"
+            ):
                 st.session_state.page = key
                 st.rerun()
 
         st.markdown("---")
         st.markdown(
-            "<div style='text-align:center;padding:0.5rem;font-size:0.78rem;color:var(--accent-emerald);font-weight:600;'>"
+            "<div style='text-align:center;padding:0.5rem;font-size:0.78rem;color:var(--success);font-weight:600;'>"
             "✦ PRO Version — All Features Unlocked</div>",
             unsafe_allow_html=True,
         )
@@ -153,13 +161,16 @@ def main() -> None:
             next_key = PAGE_ORDER[next_idx]
             next_label, _ = PAGES[next_key]
             st.markdown("---")
-            if st.button(f"Next: {next_label} →", use_container_width=True, type="primary"):
+            if st.button(
+                f"Next: {next_label} →", use_container_width=True, type="primary"
+            ):
                 st.session_state.page = next_key
                 st.rerun()
 
 
 if __name__ == "__main__":
     import streamlit as st
+
     if st.runtime.exists():
         main()
     else:
@@ -173,10 +184,16 @@ if __name__ == "__main__":
             script_path = __file__
 
         sys.argv = [
-            "streamlit", "run", script_path,
-            "--server.port", "8501",
-            "--server.headless", "false",
-            "--global.developmentMode", "false",
-            "--browser.gatherUsageStats", "false",
+            "streamlit",
+            "run",
+            script_path,
+            "--server.port",
+            "8501",
+            "--server.headless",
+            "false",
+            "--global.developmentMode",
+            "false",
+            "--browser.gatherUsageStats",
+            "false",
         ]
         sys.exit(stcli.main())

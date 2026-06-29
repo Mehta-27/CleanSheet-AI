@@ -36,10 +36,7 @@ def compute_score(df: pd.DataFrame) -> QualityScore:
     validity = _validity_score(df, prof)
 
     overall = (
-        completeness * 0.30
-        + uniqueness * 0.20
-        + consistency * 0.25
-        + validity * 0.25
+        completeness * 0.30 + uniqueness * 0.20 + consistency * 0.25 + validity * 0.25
     )
 
     return QualityScore(
@@ -92,7 +89,9 @@ def _validity_score(df: pd.DataFrame, prof) -> float:
             non_null = df[col].dropna()
             if len(non_null) > 0:
                 try:
-                    pd.to_numeric(non_null)
+                    numeric_vals = pd.to_numeric(non_null, errors="strict")
+                    if len(numeric_vals) == len(non_null):
+                        penalties += 1
                 except (ValueError, TypeError):
                     pass
 
@@ -113,13 +112,15 @@ def render_quality_dashboard(df: pd.DataFrame) -> None:
     col5.metric("Validity", f"{score.validity}/100")
 
     fig = go.Figure()
-    fig.add_trace(go.Scatterpolar(
-        r=[score.completeness, score.uniqueness, score.consistency, score.validity],
-        theta=["Completeness", "Uniqueness", "Consistency", "Validity"],
-        fill="toself",
-        name="Current Score",
-        line_color="#1E88E5",
-    ))
+    fig.add_trace(
+        go.Scatterpolar(
+            r=[score.completeness, score.uniqueness, score.consistency, score.validity],
+            theta=["Completeness", "Uniqueness", "Consistency", "Validity"],
+            fill="toself",
+            name="Current Score",
+            line_color="#1E88E5",
+        )
+    )
     fig.update_layout(
         polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
         height=400,
@@ -127,8 +128,16 @@ def render_quality_dashboard(df: pd.DataFrame) -> None:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    quality_emoji = "🟢" if score.overall >= 80 else "🟡" if score.overall >= 50 else "🔴"
-    quality_label = "Excellent" if score.overall >= 80 else "Needs Work" if score.overall >= 50 else "Poor"
+    quality_emoji = (
+        "🟢" if score.overall >= 80 else "🟡" if score.overall >= 50 else "🔴"
+    )
+    quality_label = (
+        "Excellent"
+        if score.overall >= 80
+        else "Needs Work"
+        if score.overall >= 50
+        else "Poor"
+    )
 
     st.markdown(f"### {quality_emoji} Quality Rating: **{quality_label}**")
 

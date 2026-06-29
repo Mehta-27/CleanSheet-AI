@@ -38,17 +38,22 @@ def render_issues() -> None:
                 unsafe_allow_html=True,
             )
 
-            miss_df = pd.DataFrame({
-                "Column": list(profile.missing_values.keys()),
-                "Missing": list(profile.missing_values.values()),
-                "%": [f"{v}%" for v in profile.missing_pct.values()],
-            })
+            miss_df = pd.DataFrame(
+                {
+                    "Column": list(profile.missing_values.keys()),
+                    "Missing": list(profile.missing_values.values()),
+                    "%": [f"{v}%" for v in profile.missing_pct.values()],
+                }
+            )
             st.dataframe(miss_df, use_container_width=True, hide_index=True)
 
             fig = px.bar(
-                miss_df, x="Column", y="Missing",
+                miss_df,
+                x="Column",
+                y="Missing",
                 title="",
-                color="Missing", color_continuous_scale=["#06B6D4", "#F43F5E"],
+                color="Missing",
+                color_continuous_scale=["#06B6D4", "#F43F5E"],
             )
             fig.update_layout(
                 height=280,
@@ -77,10 +82,13 @@ def render_issues() -> None:
             if profile.duplicate_rows:
                 st.dataframe(
                     df.iloc[profile.duplicate_rows[:10]],
-                    use_container_width=True, height=200
+                    use_container_width=True,
+                    height=200,
                 )
                 if len(profile.duplicate_rows) > 10:
-                    st.caption(f"Showing 10 of {len(profile.duplicate_rows)} duplicate rows")
+                    st.caption(
+                        f"Showing 10 of {len(profile.duplicate_rows)} duplicate rows"
+                    )
 
     # ── Constant Columns ──
     if profile.constant_columns:
@@ -125,7 +133,7 @@ def render_issues() -> None:
         st.markdown(
             "<div style='text-align:center; padding:2rem;'>"
             "<div style='font-size:3rem; margin-bottom:0.5rem;'>✅</div>"
-            "<p style='font-size:1.1rem; font-weight:600; color:var(--accent-green);'>"
+            "<p style='font-size:1.1rem; font-weight:600; color:var(--success);'>"
             "No data quality issues detected!</p>"
             "<p style='color:var(--text-secondary); font-size:0.88rem;'>"
             "Your data looks clean. You're ready to export.</p>"
